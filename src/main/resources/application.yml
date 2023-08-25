@@ -1,1 +1,42 @@
+# \u4E3B\u914D\u7F6E\u6587\u4EF6
 
+spring:
+  # \u6FC0\u6D3B\u73AF\u5883\u914D\u7F6E
+  profiles:
+    active: dev
+  # \u6587\u4EF6\u7F16\u7801 UTF8
+  mandatory-file-encoding: UTF-8
+  mvc:
+    # 404 \u4EA4\u7ED9\u5F02\u5E38\u5904\u7406\u5668\u5904\u7406
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      # \u5173\u95ED\u9ED8\u8BA4\u9759\u6001\u8D44\u6E90\u7684\u6620\u5C04\u89C4\u5219
+      add-mappings: false
+
+mybatis-plus:
+  configuration:
+    # \u5F00\u542F\u4E0B\u5212\u7EBF\u8F6C\u9A7C\u5CF0
+    map-underscore-to-camel-case: true
+    # \u6307\u5B9A\u9ED8\u8BA4\u679A\u4E3E\u7C7B\u578B\u7684\u7C7B\u578B\u8F6C\u6362\u5668
+    default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler
+  global-config:
+    # \u5F00\u542F/\u5173\u95ED banner \u6253\u5370
+    banner: false
+    db-config:
+      # \u903B\u8F91\u5220\u9664\uFF08\u8F6F\u5220\u9664\uFF09
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+  # mapper\u8DEF\u5F84\u4F4D\u7F6E
+  mapper-locations: classpath:mapper/*.xml
+
+lin:
+  cms:
+    # \u5F00\u542F\u884C\u4E3A\u65E5\u5FD7\u8BB0\u5F55\uFF08logger\uFF09
+    logger-enabled: true
+    # access token \u8FC7\u671F\u65F6\u95F4\uFF0C3600s \u4E00\u4E2A\u5C0F\u65F6
+    token-access-expire: 3600
+    # refresh token \u8FC7\u671F\u65F6\u95F4\uFF0C2592000s \u4E00\u4E2A\u6708
+    token-refresh-expire: 2592000
+    # \u4EE4\u724C secret
+    token-secret: x88Wf0991079889x8796a0Ac68f9ecJJU17c5Vbe8beod7d8d3e695*4
