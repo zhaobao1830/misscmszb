@@ -3,7 +3,6 @@ package com.zb.misscmszb.module.file;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.util.List;
 
 /**
@@ -15,7 +14,7 @@ public interface Uploader {
      * @param fileMap 文件map
      * @return 文件数据
      */
-    List<File> upload(MultiValueMap<String, MultipartFile> fileMap);
+    List<FileData> upload(MultiValueMap<String, MultipartFile> fileMap);
 
-    List<File> upload(MultiValueMap<String, MultipartFile> fileMap, PreHandler preHandler);
+    List<FileData> upload(MultiValueMap<String, MultipartFile> fileMap, PreHandler preHandler);
 }

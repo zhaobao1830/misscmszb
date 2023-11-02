@@ -1,7 +1,5 @@
 package com.zb.misscmszb.module.file;
 
-import java.io.File;
-
 /**
  * 文件前预处理器
  */
@@ -11,5 +9,5 @@ public interface PreHandler {
      *
      * @return 是否上传，若返回false，则不上传
      */
-    boolean handle(File file);
+    boolean handle(FileData fileData);
 }
