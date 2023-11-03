@@ -10,6 +10,9 @@ import java.io.Serializable;
 @TableName("lin_file")
 @EqualsAndHashCode(callSuper = true)
 public class FileDO extends BaseModel implements Serializable {
+    /**
+     * 文件保存路径
+     */
     private String path;
     /**
      * LOCAL REMOTE
@@ -18,6 +21,9 @@ public class FileDO extends BaseModel implements Serializable {
 
     private String name;
 
+    /**
+     * 文件后缀名
+     */
     private String extension;
 
     private Integer size;

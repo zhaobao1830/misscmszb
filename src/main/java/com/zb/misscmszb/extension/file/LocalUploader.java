@@ -1,16 +1,21 @@
-package com.zb.misscmszb.extension.file.config;
+package com.zb.misscmszb.extension.file;
 
 import com.zb.misscmszb.module.file.AbstractUploader;
 import com.zb.misscmszb.module.file.FileConfiguration;
 import com.zb.misscmszb.module.file.FileConstant;
+import com.zb.misscmszb.module.file.FileUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+@Slf4j
 public class LocalUploader extends AbstractUploader {
 
     @Autowired
@@ -59,6 +64,17 @@ public class LocalUploader extends AbstractUploader {
      */
     @Override
     protected boolean handleOneFile(byte[] bytes, String newFilename) {
-        return false;
+        // 获取绝对路径
+        String absolutePath = FileUtil.getFileAbsolutePath(fileConfiguration.getStoreDir(), newFilename);
+        try {
+            BufferedOutputStream stream = new BufferedOutputStream(Files.newOutputStream(Paths.get(absolutePath)));
+            stream.write(bytes);
+            stream.close();
+        } catch (Exception e) {
+            log.error("write file to local err:", e);
+            // throw new FailedException("read file date failed", 10190);
+            return false;
+        }
+        return true;
     }
 }

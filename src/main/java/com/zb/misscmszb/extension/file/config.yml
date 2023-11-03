@@ -2,22 +2,22 @@
 
 cms:
   file:
-    # 文件服务域名
+    # 文件上传后，访问域名配置
     domain: http://localhost:5000/
-    # 排除文件类型
+    # 禁止某些类型文件上传
     exclude:
-    # 包括文件类型
+    # 允许某些类型文件上传
     include:
       - .jpg
       - .png
       - .jpeg
-    # 文件最大数量
+    # 上传文件最大数量
     nums: 10
     # 服务器文件路径
     serve-path: assets/**
     # 单个文件最大体积
     single-limit: 2MB
-    # 本地文件保存位置
+    # 本地文件存储位置，默认在工作目录下的assets目录
     store-dir: assets/
 spring:
   servlet:

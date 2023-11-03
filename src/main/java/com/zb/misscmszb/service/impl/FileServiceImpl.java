@@ -4,24 +4,57 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zb.misscmszb.bo.FileBO;
 import com.zb.misscmszb.mapper.FileMapper;
 import com.zb.misscmszb.model.FileDO;
+import com.zb.misscmszb.module.file.FileConfiguration;
+import com.zb.misscmszb.module.file.FileConstant;
+import com.zb.misscmszb.module.file.Uploader;
 import com.zb.misscmszb.service.FileService;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class FileServiceImpl extends ServiceImpl<FileMapper, FileDO> implements FileService {
+
+    @Autowired
+    private Uploader uploader;
+
+    @Autowired
+    private FileConfiguration fileConfiguration;
+
     /**
      * 上传文件
      *
      * @param fileMap 文件map
      * @return 文件数据
      */
+    /**
+     * 为什么不做批量插入
+     * 1. 文件上传的数量一般不多，3个左右
+     * 2. 批量插入不能得到数据的id字段，不利于直接返回数据
+     */
     @Override
     public List<FileBO> upload(MultiValueMap<String, MultipartFile> fileMap) {
-        return null;
+        List<FileBO> fileBOList = new ArrayList<>();
+        uploader.upload(fileMap, fileData -> {
+            FileDO found = baseMapper.selectByMd5(fileData.getMd5());
+            // 数据库中不存在
+            if (found == null) {
+                FileDO fileDO = new FileDO();
+                BeanUtils.copyProperties(fileData, fileDO);
+                baseMapper.insert(fileDO);
+                fileBOList.add(transformDoToBo(fileDO, fileData.getKey()));
+                return true;
+            }
+            // 已存在，则直接转化返回
+            fileBOList.add(transformDoToBo(found, fileData.getKey()));
+            return false;
+        });
+        return fileBOList;
     }
 
     /**
@@ -33,5 +66,23 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileDO> implements 
     @Override
     public boolean checkFileExistByMd5(String md5) {
         return this.baseMapper.selectCountByMd5(md5) > 0;
+    }
+
+    private FileBO transformDoToBo(FileDO fileDO, String key) {
+        FileBO fileBO = new FileBO();
+        BeanUtils.copyProperties(fileDO, fileBO);
+        if (fileDO.getType().equals(FileConstant.LOCAL)) {
+            String s = fileConfiguration.getServePath().split("/")[0];
+            // replaceAll 是将 windows 平台下的 \ 替换为 /
+            if(System.getProperties().getProperty("os.name").toUpperCase().contains("WINDOWS")){
+                fileBO.setUrl(fileConfiguration.getDomain() + s + "/" + fileDO.getPath().replaceAll("\\\\","/"));
+            }else {
+                fileBO.setUrl(fileConfiguration.getDomain() + s + "/" + fileDO.getPath());
+            }
+        } else {
+            fileBO.setUrl(fileDO.getPath());
+        }
+        fileBO.setKey(key);
+        return fileBO;
     }
 }

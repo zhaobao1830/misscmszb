@@ -51,12 +51,13 @@ public abstract class AbstractUploader implements Uploader{
     public List<FileData> upload(MultiValueMap<String, MultipartFile> fileMap) {
         // 校验上传文件是否为空和数量
         checkFileMap(fileMap);
-        return null;
+        return handleMultipartFiles(fileMap);
     }
 
     @Override
     public List<FileData> upload(MultiValueMap<String, MultipartFile> fileMap, PreHandler preHandler) {
-        return null;
+        this.preHandler = preHandler;
+        return upload(fileMap);
     }
 
     private void checkFileMap(MultiValueMap<String, MultipartFile> fileMap) {
@@ -74,9 +75,10 @@ public abstract class AbstractUploader implements Uploader{
         List<FileData> fileList = new ArrayList<>();
         fileMap.keySet().forEach(key -> fileMap.get(key).forEach(file -> {
                     if (!file.isEmpty()) {
-
+                        handleFile(fileList, singleFileLimit, file);
                     }
         }));
+        return fileList;
     }
 
     /**
@@ -110,7 +112,10 @@ public abstract class AbstractUploader implements Uploader{
         if (preHandler != null && !preHandler.handle(fileData)) {
             return;
         }
-        boolean ok = han
+        boolean ok = handleOneFile(bytes, newFileName);
+        if (ok) {
+            fileDataList.add(fileData);
+        }
     }
 
     // 获取单个上传文件的大小

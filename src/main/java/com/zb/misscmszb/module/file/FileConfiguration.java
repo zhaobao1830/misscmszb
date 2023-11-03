@@ -5,9 +5,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
-@ConfigurationProperties(prefix = "cms.file")
-@PropertySource(value = "classpath:com/zb/misscmszb/extension/file/config/config.yml", encoding = "UTF-8", factory = YamlPropertySourceFactory.class)
+/**
+ * 文件配置类
+ */
 @Component
+@ConfigurationProperties(prefix = "cms.file")
+@PropertySource(
+        value = "classpath:com/zb/misscmszb/extension/file/config.yml",
+        encoding = "UTF-8", factory = YamlPropertySourceFactory.class)
 public class FileConfiguration {
     private static final String[] DEFAULT_EMPTY_ARRAY = new String[0];
 
