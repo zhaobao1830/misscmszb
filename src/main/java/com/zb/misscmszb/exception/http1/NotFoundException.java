@@ -1,4 +1,4 @@
-package com.zb.misscmszb.exception.http;
+package com.zb.misscmszb.exception.http1;
 
 public class NotFoundException extends HttpException{
     public NotFoundException(int code) {

@@ -1,6 +1,6 @@
 package com.zb.misscmszb.module.file;
 
-import com.zb.misscmszb.exception.http.NotFoundException;
+import com.zb.misscmszb.exception.http1.NotFoundException;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 

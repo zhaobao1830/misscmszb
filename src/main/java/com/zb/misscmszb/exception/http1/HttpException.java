@@ -1,4 +1,4 @@
-package com.zb.misscmszb.exception.http;
+package com.zb.misscmszb.exception.http1;
 
 public class HttpException extends RuntimeException{
     protected Integer code;
