@@ -1,6 +1,6 @@
 package com.zb.misscmszb.module.file;
 
-import io.github.talelin.autoconfigure.exception.*;
+import com.zb.misscmszb.exception.http.NotFoundException;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,7 +14,7 @@ import java.util.UUID;
  */
 public abstract class AbstractUploader implements Uploader{
     // 预处理器
-    private PreHandler preHandler;
+    private UploadHandler uploadHandler;
 
     /**
      * 获取文件上传配置
@@ -48,31 +48,33 @@ public abstract class AbstractUploader implements Uploader{
      * @return 文件数据
      */
     @Override
-    public List<FileData> upload(MultiValueMap<String, MultipartFile> fileMap) {
+    public List<FileObj> upload(MultiValueMap<String, MultipartFile> fileMap) {
         // 校验上传文件是否为空和数量
         checkFileMap(fileMap);
         return handleMultipartFiles(fileMap);
     }
 
     @Override
-    public List<FileData> upload(MultiValueMap<String, MultipartFile> fileMap, PreHandler preHandler) {
-        this.preHandler = preHandler;
+    public List<FileObj> upload(MultiValueMap<String, MultipartFile> fileMap, UploadHandler uploadHandler) {
+        this.uploadHandler = uploadHandler;
         return upload(fileMap);
     }
 
     private void checkFileMap(MultiValueMap<String, MultipartFile> fileMap) {
         if (fileMap.isEmpty()) {
-            throw new NotFoundException(10026,  "file not found");
+//            throw new NotFoundException(10026,  "file not found");
+            throw new NotFoundException(10002);
         }
         int nums = getFileConfiguration().getNums();
         if (fileMap.size() > nums) {
-            throw new FileTooManyException(10180, "too many files, amount of files must less than" + nums);
+//            throw new FileTooManyException(10180, "too many files, amount of files must less than" + nums);
+            throw new NotFoundException(10002);
         }
     }
 
-    private List<FileData> handleMultipartFiles(MultiValueMap<String, MultipartFile> fileMap) {
+    private List<FileObj> handleMultipartFiles(MultiValueMap<String, MultipartFile> fileMap) {
         long singleFileLimit = getSingleFileLimit();
-        List<FileData> fileList = new ArrayList<>();
+        List<FileObj> fileList = new ArrayList<>();
         fileMap.keySet().forEach(key -> fileMap.get(key).forEach(file -> {
                     if (!file.isEmpty()) {
                         handleFile(fileList, singleFileLimit, file);
@@ -87,7 +89,7 @@ public abstract class AbstractUploader implements Uploader{
      * @param singleFileLimit 单个文件的最大值
      * @param file 上传的文件
      */
-    private void handleFile(List<FileData> fileDataList, long singleFileLimit, MultipartFile file) {
+    private void handleFile(List<FileObj> fileDataList, long singleFileLimit, MultipartFile file) {
         byte[] bytes = getFileBytes(file);
         String[] include = getFileConfiguration().getInclude();
         String[] exclude = getFileConfiguration().getExclude();
@@ -99,7 +101,7 @@ public abstract class AbstractUploader implements Uploader{
         String storePath = getStorePath(newFileName);
         // 生成文件的md5值
         String md5 = FileUtil.getFileMD5(bytes);
-        FileData fileData = FileData.builder().
+        FileObj fileData = FileObj.builder().
                 name(newFileName).
                 md5(md5).
                 key(file.getName()).
@@ -109,12 +111,16 @@ public abstract class AbstractUploader implements Uploader{
                 extension(ext).
                 build();
         // 如果预处理器不为空，且处理结果为false，直接返回, 否则处理
-        if (preHandler != null && !preHandler.handle(fileData)) {
+        if (uploadHandler != null && !uploadHandler.preHandle(fileData)) {
             return;
         }
         boolean ok = handleOneFile(bytes, newFileName);
         if (ok) {
             fileDataList.add(fileData);
+            // 上传到本地或云上成功之后，调用afterHandle
+            if (uploadHandler != null) {
+                uploadHandler.afterHandle(fileData);
+            }
         }
     }
 
@@ -134,7 +140,8 @@ public abstract class AbstractUploader implements Uploader{
         try {
             bytes = file.getBytes();
         } catch (Exception e) {
-            throw new FailedException(10190, "read file date failed");
+//            throw new FailedException(10190, "read file date failed");
+            throw new NotFoundException(10002);
         }
         return bytes;
     }
@@ -152,11 +159,13 @@ public abstract class AbstractUploader implements Uploader{
         String ext = FileUtil.getFileExt(originName);
         // 检测后缀名
         if (!this.checkExt(include, exclude, ext)) {
-            throw new FileExtensionException(ext + "文件类型不支持");
+//            throw new FileExtensionException(ext + "文件类型不支持");
+            throw new NotFoundException(10002);
         }
         // 检测单个文件的大小
         if (length > singleFileLimit) {
-            throw new FileTooLargeException(originName + "文件不能超过" + singleFileLimit);
+//            throw new FileTooLargeException(originName + "文件不能超过" + singleFileLimit);
+            throw new NotFoundException(10002);
         }
         return ext;
     }

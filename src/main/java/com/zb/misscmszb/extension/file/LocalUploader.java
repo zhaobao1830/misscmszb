@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.nio.file.Files;
+import java.io.FileOutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -65,14 +65,13 @@ public class LocalUploader extends AbstractUploader {
     @Override
     protected boolean handleOneFile(byte[] bytes, String newFilename) {
         // 获取绝对路径
-        String absolutePath = FileUtil.getFileAbsolutePath(fileConfiguration.getStoreDir(), newFilename);
+        String absolutePath = FileUtil.getFileAbsolutePath(fileConfiguration.getStoreDir(), getStorePath(newFilename));
         try {
-            BufferedOutputStream stream = new BufferedOutputStream(Files.newOutputStream(Paths.get(absolutePath)));
+            BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new java.io.File(absolutePath)));
             stream.write(bytes);
             stream.close();
         } catch (Exception e) {
             log.error("write file to local err:", e);
-            // throw new FailedException("read file date failed", 10190);
             return false;
         }
         return true;

@@ -2,12 +2,15 @@ package com.zb.misscmszb.module.file;
 
 import lombok.*;
 
+/**
+ * 文件对象
+ */
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FileData {
+public class FileObj {
     /**
      * 真实url
      */

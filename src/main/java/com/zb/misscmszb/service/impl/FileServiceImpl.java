@@ -4,9 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zb.misscmszb.bo.FileBO;
 import com.zb.misscmszb.mapper.FileMapper;
 import com.zb.misscmszb.model.FileDO;
-import com.zb.misscmszb.module.file.FileConfiguration;
-import com.zb.misscmszb.module.file.FileConstant;
-import com.zb.misscmszb.module.file.Uploader;
+import com.zb.misscmszb.module.file.*;
 import com.zb.misscmszb.service.FileService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,19 +38,41 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileDO> implements 
     @Override
     public List<FileBO> upload(MultiValueMap<String, MultipartFile> fileMap) {
         List<FileBO> fileBOList = new ArrayList<>();
-        uploader.upload(fileMap, fileData -> {
-            FileDO found = baseMapper.selectByMd5(fileData.getMd5());
-            // 数据库中不存在
-            if (found == null) {
-                FileDO fileDO = new FileDO();
-                BeanUtils.copyProperties(fileData, fileDO);
-                baseMapper.insert(fileDO);
-                fileBOList.add(transformDoToBo(fileDO, fileData.getKey()));
-                return true;
+//        uploader.upload(fileMap, fileData -> {
+//            FileDO found = baseMapper.selectByMd5(fileData.getMd5());
+//            // 数据库中不存在
+//            if (found == null) {
+//                FileDO fileDO = new FileDO();
+//                BeanUtils.copyProperties(fileData, fileDO);
+//                baseMapper.insert(fileDO);
+//                fileBOList.add(transformDoToBo(fileDO, fileData.getKey()));
+//                return true;
+//            }
+//            // 已存在，则直接转化返回
+//            fileBOList.add(transformDoToBo(found, fileData.getKey()));
+//            return false;
+//        });
+        uploader.upload(fileMap, new UploadHandler() {
+            @Override
+            public boolean preHandle(FileObj fileObj) {
+                FileDO fileDO = baseMapper.selectByMd5(fileObj.getMd5());
+                // 数据库中不存在，存储操作放在上传到本地或云上之后
+                if (fileDO == null) {
+                    return true;
+                }
+                // 已存在，则直接转化返回
+                fileBOList.add(transformDoToBo(fileDO, fileObj.getKey()));
+                return false;
             }
-            // 已存在，则直接转化返回
-            fileBOList.add(transformDoToBo(found, fileData.getKey()));
-            return false;
+
+            @Override
+            public void afterHandle(FileObj fileObj) {
+                // 保存到数据库
+                FileDO fileDO = new FileDO();
+                BeanUtils.copyProperties(fileObj, fileDO);
+                getBaseMapper().insert(fileDO);
+                fileBOList.add(transformDoToBo(fileDO, fileObj.getKey()));
+            }
         });
         return fileBOList;
     }
