@@ -38,20 +38,6 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileDO> implements 
     @Override
     public List<FileBO> upload(MultiValueMap<String, MultipartFile> fileMap) {
         List<FileBO> fileBOList = new ArrayList<>();
-//        uploader.upload(fileMap, fileData -> {
-//            FileDO found = baseMapper.selectByMd5(fileData.getMd5());
-//            // 数据库中不存在
-//            if (found == null) {
-//                FileDO fileDO = new FileDO();
-//                BeanUtils.copyProperties(fileData, fileDO);
-//                baseMapper.insert(fileDO);
-//                fileBOList.add(transformDoToBo(fileDO, fileData.getKey()));
-//                return true;
-//            }
-//            // 已存在，则直接转化返回
-//            fileBOList.add(transformDoToBo(found, fileData.getKey()));
-//            return false;
-//        });
         uploader.upload(fileMap, new UploadHandler() {
             @Override
             public boolean preHandle(FileObj fileObj) {

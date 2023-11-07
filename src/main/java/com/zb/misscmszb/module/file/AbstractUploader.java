@@ -1,6 +1,6 @@
 package com.zb.misscmszb.module.file;
 
-import com.zb.misscmszb.exception.http1.NotFoundException;
+import com.zb.misscmszb.exception.*;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -62,13 +62,11 @@ public abstract class AbstractUploader implements Uploader{
 
     private void checkFileMap(MultiValueMap<String, MultipartFile> fileMap) {
         if (fileMap.isEmpty()) {
-//            throw new NotFoundException(10026,  "file not found");
-            throw new NotFoundException(10002);
+            throw new NotFoundException(10026,  "file not found");
         }
         int nums = getFileConfiguration().getNums();
         if (fileMap.size() > nums) {
-//            throw new FileTooManyException(10180, "too many files, amount of files must less than" + nums);
-            throw new NotFoundException(10002);
+            throw new FileTooManyException(10180, "too many files, amount of files must less than" + nums);
         }
     }
 
@@ -140,8 +138,7 @@ public abstract class AbstractUploader implements Uploader{
         try {
             bytes = file.getBytes();
         } catch (Exception e) {
-//            throw new FailedException(10190, "read file date failed");
-            throw new NotFoundException(10002);
+            throw new FailedException(10190, "read file date failed");
         }
         return bytes;
     }
@@ -159,13 +156,11 @@ public abstract class AbstractUploader implements Uploader{
         String ext = FileUtil.getFileExt(originName);
         // 检测后缀名
         if (!this.checkExt(include, exclude, ext)) {
-//            throw new FileExtensionException(ext + "文件类型不支持");
-            throw new NotFoundException(10002);
+            throw new FileExtensionException(ext + "文件类型不支持");
         }
         // 检测单个文件的大小
         if (length > singleFileLimit) {
-//            throw new FileTooLargeException(originName + "文件不能超过" + singleFileLimit);
-            throw new NotFoundException(10002);
+            throw new FileTooLargeException(originName + "文件不能超过" + singleFileLimit);
         }
         return ext;
     }
