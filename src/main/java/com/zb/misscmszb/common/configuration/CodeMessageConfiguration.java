@@ -11,7 +11,7 @@ import java.util.Map;
 @Component
 @ConfigurationProperties
 @PropertySource(value = "classpath:config/exception-code.properties")
-public class ExceptionCodeMessageConfiguration {
+public class CodeMessageConfiguration {
 
     private static Map<Integer, String> codeMessage = new HashMap<>();
 
@@ -24,6 +24,6 @@ public class ExceptionCodeMessageConfiguration {
     }
 
     public void setCodeMessage(Map<Integer, String> codeMessage) {
-        ExceptionCodeMessageConfiguration.codeMessage = codeMessage;
+        CodeMessageConfiguration.codeMessage = codeMessage;
     }
 }
