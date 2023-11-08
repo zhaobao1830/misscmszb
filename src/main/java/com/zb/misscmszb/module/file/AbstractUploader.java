@@ -13,6 +13,7 @@ import java.util.UUID;
  * 模版模式
  */
 public abstract class AbstractUploader implements Uploader{
+
     // 预处理器
     private UploadHandler uploadHandler;
 

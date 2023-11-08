@@ -15,6 +15,9 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * 文件上传到本地
+ */
 @Slf4j
 public class LocalUploader extends AbstractUploader {
 
