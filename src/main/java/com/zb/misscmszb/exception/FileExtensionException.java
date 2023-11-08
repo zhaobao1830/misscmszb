@@ -4,6 +4,7 @@ import com.zb.misscmszb.bean.Code;
 import org.springframework.http.HttpStatus;
 
 public class FileExtensionException extends HttpException{
+
     protected int code = Code.FILE_EXTENSION.getCode();
 
     protected int httpStatusCode = HttpStatus.NOT_ACCEPTABLE.value();
