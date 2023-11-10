@@ -1,4 +1,4 @@
-package com.zb.misscmszb.controller;
+package com.zb.misscmszb.controller.cms;
 
 import com.zb.misscmszb.bo.FileBO;
 import com.zb.misscmszb.service.FileService;
