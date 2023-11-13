@@ -31,7 +31,7 @@ mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
 
 
-lin:
+zb:
   cms:
     # 开启行为日志记录（logger）
     logger-enabled: true
