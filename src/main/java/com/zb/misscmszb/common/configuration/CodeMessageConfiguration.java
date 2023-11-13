@@ -1,14 +1,14 @@
 package com.zb.misscmszb.common.configuration;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
 
 
-@Component
+@Configuration
 @ConfigurationProperties
 @PropertySource(value = "classpath:config/exception-code.properties")
 public class CodeMessageConfiguration {
