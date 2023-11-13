@@ -2,13 +2,13 @@ package com.zb.misscmszb.module.file;
 
 import com.zb.misscmszb.common.factory.YamlPropertySourceFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Component;
 
 /**
  * 文件配置类
  */
-@Component
+@Configuration
 @ConfigurationProperties(prefix = "cms.file")
 @PropertySource(
         value = "classpath:com/zb/misscmszb/extension/file/config.yml",
