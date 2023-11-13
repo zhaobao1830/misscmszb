@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
  * 失败异常
  */
 public class FailedException extends HttpException{
+
     protected int code = Code.FAIL.getCode();
 
     protected int httpStatusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();

@@ -3,13 +3,15 @@ package com.zb.misscmszb.model;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
+import java.io.Serializable;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @TableName("lin_user")
 @EqualsAndHashCode(callSuper = true)
-public class UserDO extends BaseModel{
+public class UserDO extends BaseModel implements Serializable {
 
     /**
      * 用户名，唯一

@@ -93,6 +93,14 @@
             <version>4.4.0</version>
         </dependency>
 
+<!--        进行加密和验证，比如对密码进行加密和验证-->
+        <!-- https://mvnrepository.com/artifact/com.amdelamar/jhash -->
+        <dependency>
+            <groupId>com.amdelamar</groupId>
+            <artifactId>jhash</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+
     </dependencies>
 
     <build>

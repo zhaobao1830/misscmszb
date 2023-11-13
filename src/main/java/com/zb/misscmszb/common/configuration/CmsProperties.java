@@ -2,13 +2,10 @@ package com.zb.misscmszb.common.configuration;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Component;
 
 /**
  * cms 配置属性
  */
-@Configuration
 @ConfigurationProperties("zb.cms")
 public class CmsProperties {
 

@@ -52,6 +52,21 @@ public class DoubleJWT {
         this.initBuilderAndVerifier();
     }
 
+    /**
+     * 不传入加密算法，传入密钥，则默认使用 HMAC256 加密算法
+     * 双token模式
+     *
+     * @param secret        加密算法
+     * @param accessExpire  access_token过期时间
+     * @param refreshExpire refresh_token过期时间
+     */
+    public DoubleJWT(String secret, long accessExpire, long refreshExpire) {
+        this.algorithm = Algorithm.HMAC256(secret);
+        this.accessExpire = accessExpire;
+        this.refreshExpire = refreshExpire;
+        this.initBuilderAndVerifier();
+    }
+
     public void initBuilderAndVerifier() {
         accessVerifier = JWT.require(algorithm)
                 .acceptExpiresAt(this.accessExpire)
@@ -152,6 +167,12 @@ public class DoubleJWT {
 
     public String generateRefreshToken(String identity) {
         return generateToken(TokenConstant.REFRESH_TYPE, identity, TokenConstant.LIN_SCOPE, this.refreshExpire);
+    }
+
+    public Tokens generateTokens(long identity) {
+        String access = this.generateToken(TokenConstant.ACCESS_TYPE, identity, TokenConstant.LIN_SCOPE, this.accessExpire);
+        String refresh = this.generateToken(TokenConstant.REFRESH_TYPE, identity, TokenConstant.LIN_SCOPE, this.refreshExpire);
+        return new Tokens(access, refresh);
     }
 
     public Tokens generateTokens(String identity) {
