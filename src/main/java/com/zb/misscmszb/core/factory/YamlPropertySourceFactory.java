@@ -1,4 +1,4 @@
-package com.zb.misscmszb.common.factory;
+package com.zb.misscmszb.core.factory;
 
 import org.springframework.boot.env.YamlPropertySourceLoader;
 import org.springframework.core.env.PropertySource;

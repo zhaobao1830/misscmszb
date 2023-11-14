@@ -1,4 +1,4 @@
-package com.zb.misscmszb.common.constant;
+package com.zb.misscmszb.core.constant;
 
 /**
  * 身份认证常量

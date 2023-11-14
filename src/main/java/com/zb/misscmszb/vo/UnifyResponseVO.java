@@ -1,8 +1,8 @@
 package com.zb.misscmszb.vo;
 
 import com.zb.misscmszb.bean.Code;
-import com.zb.misscmszb.common.util.RequestUtil;
-import com.zb.misscmszb.common.util.ResponseUtil;
+import com.zb.misscmszb.core.util.RequestUtil;
+import com.zb.misscmszb.core.util.ResponseUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

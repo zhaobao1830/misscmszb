@@ -1,4 +1,4 @@
-package com.zb.misscmszb.common.util;
+package com.zb.misscmszb.core.util;
 
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;

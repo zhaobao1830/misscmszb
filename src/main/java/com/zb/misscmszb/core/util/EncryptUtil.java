@@ -1,4 +1,4 @@
-package com.zb.misscmszb.common.util;
+package com.zb.misscmszb.core.util;
 
 import com.amdelamar.jhash.Hash;
 import com.amdelamar.jhash.algorithms.Type;

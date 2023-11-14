@@ -1,4 +1,4 @@
-package com.zb.misscmszb.common.configuration;
+package com.zb.misscmszb.core.configuration;
 
 import com.zb.misscmszb.extension.token.DoubleJWT;
 import org.springframework.beans.factory.annotation.Autowired;

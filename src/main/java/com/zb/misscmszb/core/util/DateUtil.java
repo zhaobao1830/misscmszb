@@ -1,4 +1,4 @@
-package com.zb.misscmszb.common.util;
+package com.zb.misscmszb.core.util;
 
 import java.util.Date;
 

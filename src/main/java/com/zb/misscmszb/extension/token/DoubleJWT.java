@@ -8,8 +8,8 @@ import com.auth0.jwt.exceptions.InvalidClaimException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.zb.misscmszb.common.constant.TokenConstant;
-import com.zb.misscmszb.common.util.DateUtil;
+import com.zb.misscmszb.core.constant.TokenConstant;
+import com.zb.misscmszb.core.util.DateUtil;
 import lombok.Getter;
 import lombok.Setter;
 

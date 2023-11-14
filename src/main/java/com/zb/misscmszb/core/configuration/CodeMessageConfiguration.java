@@ -1,4 +1,4 @@
-package com.zb.misscmszb.common.configuration;
+package com.zb.misscmszb.core.configuration;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

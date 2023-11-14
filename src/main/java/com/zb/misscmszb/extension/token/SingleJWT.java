@@ -6,7 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.zb.misscmszb.common.util.DateUtil;
+import com.zb.misscmszb.core.util.DateUtil;
 import lombok.Getter;
 
 import java.util.Date;

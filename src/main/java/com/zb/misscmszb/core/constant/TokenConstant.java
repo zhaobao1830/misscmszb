@@ -1,4 +1,4 @@
-package com.zb.misscmszb.common.constant;
+package com.zb.misscmszb.core.constant;
 
 /**
  * 令牌相关变量

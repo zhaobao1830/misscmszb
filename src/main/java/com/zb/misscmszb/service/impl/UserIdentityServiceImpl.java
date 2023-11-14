@@ -2,8 +2,8 @@ package com.zb.misscmszb.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.zb.misscmszb.common.constant.IdentityConstant;
-import com.zb.misscmszb.common.util.EncryptUtil;
+import com.zb.misscmszb.core.constant.IdentityConstant;
+import com.zb.misscmszb.core.util.EncryptUtil;
 import com.zb.misscmszb.mapper.UserIdentityMapper;
 import com.zb.misscmszb.model.UserIdentityDO;
 import com.zb.misscmszb.service.UserIdentityService;

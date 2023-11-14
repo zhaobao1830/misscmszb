@@ -1,6 +1,6 @@
 package com.zb.misscmszb.module.file;
 
-import com.zb.misscmszb.common.factory.YamlPropertySourceFactory;
+import com.zb.misscmszb.core.factory.YamlPropertySourceFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;

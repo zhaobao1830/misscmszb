@@ -1,4 +1,4 @@
-package com.zb.misscmszb.common.util;
+package com.zb.misscmszb.core.util;
 
 import com.zb.misscmszb.bean.Code;
 import com.zb.misscmszb.vo.UnifyResponseVO;
