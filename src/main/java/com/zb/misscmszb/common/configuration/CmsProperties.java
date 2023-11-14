@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * cms 配置属性
  */
-@ConfigurationProperties("zb.cms")
+@ConfigurationProperties(prefix = "zb.cms")
 public class CmsProperties {
 
     private static final String[] DEFAULT_EXCLUDE_METHODS = new String[]{"OPTIONS"};

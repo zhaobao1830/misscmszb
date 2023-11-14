@@ -6,6 +6,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * cms配置文件
+ */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(CmsProperties.class)
 public class CmsConfiguration {
@@ -13,6 +16,7 @@ public class CmsConfiguration {
     @Autowired
     private CmsProperties properties;
 
+    // 调用DoubleJWT的构造函数，生成DoubleJWT对象，并通过@Bean注解注入到容器里
     @Bean
     public DoubleJWT jwt() {
         String secret = properties.getTokenSecret();
