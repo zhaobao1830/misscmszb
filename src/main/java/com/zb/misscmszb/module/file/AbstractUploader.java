@@ -1,6 +1,6 @@
 package com.zb.misscmszb.module.file;
 
-import com.zb.misscmszb.exception.*;
+import com.zb.misscmszb.core.exception.*;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 
