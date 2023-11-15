@@ -2,7 +2,6 @@ package com.zb.misscmszb.core.exception;
 
 import com.zb.misscmszb.core.configuration.CodeMessageConfiguration;
 import com.zb.misscmszb.core.util.RequestUtil;
-import com.zb.misscmszb.exception.HttpException;
 import com.zb.misscmszb.vo.UnifyResponseVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;

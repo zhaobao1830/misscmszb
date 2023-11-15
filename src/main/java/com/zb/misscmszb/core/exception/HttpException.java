@@ -1,4 +1,4 @@
-package com.zb.misscmszb.exception;
+package com.zb.misscmszb.core.exception;
 
 import com.zb.misscmszb.bean.Code;
 import com.zb.misscmszb.interfaces.BaseResponse;
