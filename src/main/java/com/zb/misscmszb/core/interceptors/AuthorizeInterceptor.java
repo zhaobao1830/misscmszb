@@ -65,7 +65,12 @@ public class AuthorizeInterceptor implements HandlerInterceptor {
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
+        authorizeVerifyResolver.handlePostHandle(request, response, handler, modelAndView);
+    }
 
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+        authorizeVerifyResolver.handleAfterCompletion(request, response, handler, ex);
     }
 
     /**

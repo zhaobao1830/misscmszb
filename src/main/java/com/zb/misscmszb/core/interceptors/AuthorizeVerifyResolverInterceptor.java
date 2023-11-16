@@ -3,13 +3,16 @@ package com.zb.misscmszb.core.interceptors;
 import com.auth0.jwt.exceptions.*;
 import com.auth0.jwt.interfaces.Claim;
 import com.zb.misscmszb.bean.MetaInfo;
+import com.zb.misscmszb.core.exception.AuthenticationException;
 import com.zb.misscmszb.core.exception.AuthorizationException;
 import com.zb.misscmszb.core.exception.TokenInvalidException;
 import com.zb.misscmszb.core.interceptors.interfaces.AuthorizeVerifyResolver;
 import com.zb.misscmszb.core.local.LocalUser;
 import com.zb.misscmszb.extension.token.DoubleJWT;
+import com.zb.misscmszb.model.PermissionDO;
 import com.zb.misscmszb.model.UserDO;
 import com.zb.misscmszb.module.file.FileConfiguration;
+import com.zb.misscmszb.service.GroupService;
 import com.zb.misscmszb.service.UserService;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -80,7 +84,16 @@ public class AuthorizeVerifyResolverInterceptor implements AuthorizeVerifyResolv
         if (verifyAdmin(user)) {
             return true;
         }
-        return false;
+        Integer userId = user.getId();
+        String permission = meta.getPermission();
+        String module = meta.getModule();
+        List<PermissionDO> permissions = userService.getUserPermissions(userId);
+        boolean matched = permissions.stream().anyMatch(it ->
+                it.getModule().equals(module) && it.getName().equals(permission));
+        if (!matched) {
+            throw new AuthenticationException(10001);
+        }
+        return true;
     }
 
     /**
@@ -93,7 +106,12 @@ public class AuthorizeVerifyResolverInterceptor implements AuthorizeVerifyResolv
      */
     @Override
     public boolean handleAdmin(HttpServletRequest request, HttpServletResponse response, MetaInfo meta) {
-        return false;
+        handleLogin(request, response, meta);
+        UserDO user = LocalUser.getLocalUser();
+        if (!verifyAdmin(user)) {
+            throw new AuthenticationException(10001);
+        }
+        return true;
     }
 
     /**
@@ -106,6 +124,15 @@ public class AuthorizeVerifyResolverInterceptor implements AuthorizeVerifyResolv
      */
     @Override
     public boolean handleRefresh(HttpServletRequest request, HttpServletResponse response, MetaInfo meta) {
+        String tokenStr = verifyHeader(request);
+        Map<String, Claim> claims;
+        try {
+            claims = jwt.decodeRefreshToken(tokenStr);
+        } catch (TokenExpiredException e) {
+            throw new com.zb.misscmszb.core.exception.TokenExpiredException(10052);
+        } catch (AlgorithmMismatchException | SignatureVerificationException | JWTDecodeException | InvalidClaimException e) {
+            throw new TokenInvalidException(10042);
+        }
         return false;
     }
 
@@ -119,7 +146,13 @@ public class AuthorizeVerifyResolverInterceptor implements AuthorizeVerifyResolv
      */
     @Override
     public boolean handleNotHandlerMethod(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        return false;
+        return true;
+    }
+
+    @Override
+    public void handleAfterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+        // 记住：很重要，请求结束后，一定要清理 ThreadLocal 中的用户信息
+        LocalUser.clearLocalUser();
     }
 
     /**
