@@ -28,6 +28,18 @@ public class AuthorizeInterceptor implements HandlerInterceptor {
 
     private String[] excludeMethods = new String[]{"OPTIONS"};
 
+    public AuthorizeInterceptor() {
+    }
+
+    /**
+     * 构造函数
+     *
+     * @param excludeMethods 不检查方法
+     */
+    public AuthorizeInterceptor(String[] excludeMethods) {
+        this.excludeMethods = excludeMethods;
+    }
+
     /**
      * 前置处理
      *

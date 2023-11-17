@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 用户服务实现类
@@ -53,5 +54,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
             return new ArrayList<>();
         }
         return permissionService.getPermissionByGroupIds(groupIds);
+    }
+
+    /**
+     * 获得用户所有权限
+     *
+     * @param userId 用户id
+     * @return 权限
+     */
+    @Override
+    public List<Map<String, List<Map<String, String>>>> getStructuralUserPermissions(Integer userId) {
+        List<PermissionDO> permissions = getUserPermissions(userId);
+        return permissionService.structuringPermissions(permissions);
     }
 }

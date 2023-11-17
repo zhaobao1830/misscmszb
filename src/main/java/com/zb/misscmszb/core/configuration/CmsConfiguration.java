@@ -1,5 +1,6 @@
 package com.zb.misscmszb.core.configuration;
 
+import com.zb.misscmszb.core.interceptors.AuthorizeInterceptor;
 import com.zb.misscmszb.extension.token.DoubleJWT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -33,5 +34,12 @@ public class CmsConfiguration {
         }
 
         return new DoubleJWT(secret, accessExpire, refreshExpire);
+    }
+
+    // 调用AuthorizeInterceptor的构造函数，生成AuthorizeInterceptor对象，并通过@Bean注解注入到容器里
+    @Bean
+    public AuthorizeInterceptor authInterceptor() {
+        String[] excludeMethods = properties.getExcludeMethods();
+        return new AuthorizeInterceptor(excludeMethods);
     }
 }
