@@ -20,13 +20,14 @@ public class CommonConfiguration {
         return new PermissionMetaCollector();
     }
 
-    @Bean
-    public Jackson2ObjectMapperBuilderCustomizer customJackson() {
-        return jacksonObjectMapperBuilder -> {
-            // 前端传递的参数，在对象里没有定义，false不会序列化，true会序列化（报错，提示对象里没有定义）
-            jacksonObjectMapperBuilder.failOnUnknownProperties(true);
-            // 返回的属性驼峰转换为小写加下划线
-            jacksonObjectMapperBuilder.propertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
-        };
-    }
+    // Jackson自定义ObjectMapper配置，现在移到了application里进行配置
+//    @Bean
+//    public Jackson2ObjectMapperBuilderCustomizer customJackson() {
+//        return jacksonObjectMapperBuilder -> {
+//            // 前端传递的参数，在对象里没有定义，false不会序列化，true会序列化（报错，提示对象里没有定义）
+//            jacksonObjectMapperBuilder.failOnUnknownProperties(true);
+//            // 返回的属性驼峰转换为小写加下划线
+//            jacksonObjectMapperBuilder.propertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
+//        };
+//    }
 }
