@@ -20,13 +20,12 @@ public class CommonConfiguration {
         return new PermissionMetaCollector();
     }
 
-    /**
-     * 接口中，自动转换的有：驼峰转换为下划线，空值输出null
-     */
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer customJackson() {
         return jacksonObjectMapperBuilder -> {
-            jacksonObjectMapperBuilder.failOnUnknownProperties(false);
+            // 前端传递的参数，在对象里没有定义，false不会序列化，true会序列化（报错，提示对象里没有定义）
+            jacksonObjectMapperBuilder.failOnUnknownProperties(true);
+            // 返回的属性驼峰转换为小写加下划线
             jacksonObjectMapperBuilder.propertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
         };
     }

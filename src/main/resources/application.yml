@@ -13,7 +13,15 @@ spring:
     resources:
       # 关闭默认静态资源的映射规则
       add-mappings: false
-
+  jackson:
+    # 前端传递的参数，在对象里没有定义，false不会序列化，true会序列化（报错，提示对象里没有定义）
+    deserialization:
+      fail-on-unknown-properties: false
+    # 返回的属性驼峰转换为小写加下划线
+    property-naming-strategy: SNAKE_CASE
+    # 日期返回时间戳
+    serialization:
+      write-dates-as-timestamps: true
 mybatis-plus:
   configuration:
     # 开启下划线转驼峰
