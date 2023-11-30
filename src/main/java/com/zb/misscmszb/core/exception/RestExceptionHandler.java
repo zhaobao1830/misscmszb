@@ -15,8 +15,7 @@ import java.lang.reflect.InvocationTargetException;
 
 /**
  * 异常配置类
- *
- * 只要配置了这个类 自定义的异常才能正常返回值
+ * 只有配置了这个类 自定义的异常才能正常返回值
  */
 @Order
 @RestControllerAdvice
