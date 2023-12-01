@@ -6,4 +6,12 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserMapper extends BaseMapper<UserDO> {
+
+    /**
+     * 查询用户名为$username的人数
+     *
+     * @param username 用户名
+     * @return 人数
+     */
+    int selectCountByUsername(String username);
 }

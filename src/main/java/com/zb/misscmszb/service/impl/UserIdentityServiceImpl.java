@@ -29,4 +29,19 @@ public class UserIdentityServiceImpl extends ServiceImpl<UserIdentityMapper, Use
         UserIdentityDO userIdentityDO = this.baseMapper.selectOne(wrapper);
         return EncryptUtil.verify(userIdentityDO.getCredential(), password);
     }
+
+    /**
+     * 修改用户名
+     *
+     * @param userId   用户id
+     * @param username 新用户名
+     * @return 是否成功
+     */
+    @Override
+    public boolean changeUsername(Integer userId, String username) {
+        UserIdentityDO userIdentity = UserIdentityDO.builder().identifier(username).build();
+        QueryWrapper<UserIdentityDO> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(UserIdentityDO::getUserId, userId);
+        return this.baseMapper.update(userIdentity, wrapper) > 0;
+    }
 }

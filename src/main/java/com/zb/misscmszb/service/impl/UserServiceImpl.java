@@ -2,14 +2,21 @@ package com.zb.misscmszb.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zb.misscmszb.core.exception.ForbiddenException;
+import com.zb.misscmszb.core.local.LocalUser;
+import com.zb.misscmszb.core.util.BeanCopyUtil;
+import com.zb.misscmszb.dto.user.UpdateInfoDTO;
 import com.zb.misscmszb.mapper.UserMapper;
 import com.zb.misscmszb.model.PermissionDO;
 import com.zb.misscmszb.model.UserDO;
 import com.zb.misscmszb.service.GroupService;
 import com.zb.misscmszb.service.PermissionService;
+import com.zb.misscmszb.service.UserIdentityService;
 import com.zb.misscmszb.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +27,9 @@ import java.util.Map;
  */
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements UserService {
+
+    @Autowired
+    private UserIdentityService userIdentityService;
 
     @Autowired
     private GroupService groupService;
@@ -66,5 +76,36 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
     public List<Map<String, List<Map<String, String>>>> getStructuralUserPermissions(Integer userId) {
         List<PermissionDO> permissions = getUserPermissions(userId);
         return permissionService.structuringPermissions(permissions);
+    }
+
+    /**
+     * 更新用户
+     *
+     * @param dto 更新用户信息用户校验器
+     */
+    @Transactional
+    @Override
+    public void updateUserInfo(UpdateInfoDTO dto) {
+        UserDO user = LocalUser.getLocalUser();
+        if (StringUtils.hasText(dto.getUsername())) {
+            boolean exist = this.checkUserExistByUsername(dto.getUsername());
+            if (exist) {
+                throw new ForbiddenException(10071);
+            }
+
+            boolean changeSuccess = userIdentityService.changeUsername(user.getId(), dto.getUsername());
+            if (changeSuccess) {
+                user.setUsername(dto.getUsername());
+            }
+        }
+        BeanCopyUtil.copyNonNullProperties(dto, user);
+
+        this.baseMapper.updateById(user);
+    }
+
+    @Override
+    public boolean checkUserExistByUsername(String username) {
+        int rows = this.baseMapper.selectCountByUsername(username);
+        return rows > 0;
     }
 }

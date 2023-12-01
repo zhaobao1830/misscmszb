@@ -14,4 +14,13 @@ public interface UserIdentityService extends IService<UserIdentityDO> {
      * @return 是否验证成功
      */
     boolean verifyUsernamePassword(Integer userId, String username, String password);
+
+    /**
+     * 修改用户名
+     *
+     * @param userId   用户id
+     * @param username 新用户名
+     * @return 是否成功
+     */
+    boolean changeUsername(Integer userId, String username);
 }
