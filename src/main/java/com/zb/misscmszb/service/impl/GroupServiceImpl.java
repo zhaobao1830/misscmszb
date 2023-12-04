@@ -77,4 +77,15 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
         GroupDO groupDO = this.getParticularGroupByLevel(level);
         return groupDO == null ? 0 : groupDO.getId();
     }
+
+    /**
+     * 获得用户的所有分组
+     *
+     * @param userId 用户id
+     * @return 所有分组
+     */
+    @Override
+    public List<GroupDO> getUserGroupsByUserId(Integer userId) {
+        return this.baseMapper.selectGroupsByUserId(userId);
+    }
 }

@@ -8,11 +8,13 @@ import com.zb.misscmszb.core.exception.ParameterException;
 import com.zb.misscmszb.dto.user.UpdateInfoDTO;
 import com.zb.misscmszb.extension.token.DoubleJWT;
 import com.zb.misscmszb.extension.token.Tokens;
+import com.zb.misscmszb.model.GroupDO;
 import com.zb.misscmszb.model.UserDO;
 import com.zb.misscmszb.service.GroupService;
 import com.zb.misscmszb.service.UserIdentityService;
 import com.zb.misscmszb.service.UserService;
 import com.zb.misscmszb.vo.UpdatedVO;
+import com.zb.misscmszb.vo.UserInfoVO;
 import com.zb.misscmszb.vo.UserPermissionVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -72,5 +74,13 @@ public class UserController {
     public UpdatedVO update(@RequestBody @Validated UpdateInfoDTO validator) {
         userService.updateUserInfo(validator);
         return new UpdatedVO(6);
+    }
+
+    @GetMapping("/information")
+    @LoginRequired
+    public UserInfoVO getInformation() {
+        UserDO user = LocalUser.getLocalUser();
+        List<GroupDO> groups = groupService.getUserGroupsByUserId(user.getId());
+        return new UserInfoVO(user, groups);
     }
 }

@@ -42,4 +42,12 @@ public interface GroupService extends IService<GroupDO> {
      * @return 用户组id
      */
     Integer getParticularGroupIdByLevel(GroupLevelEnum level);
+
+    /**
+     * 获得用户的所有分组
+     *
+     * @param userId 用户id
+     * @return 所有分组
+     */
+    List<GroupDO> getUserGroupsByUserId(Integer userId);
 }

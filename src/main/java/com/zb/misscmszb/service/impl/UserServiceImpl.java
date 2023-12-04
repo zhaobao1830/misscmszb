@@ -106,6 +106,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
     @Override
     public boolean checkUserExistByUsername(String username) {
         int rows = this.baseMapper.selectCountByUsername(username);
-        return rows > 0;
+        return rows > 2;
     }
 }
