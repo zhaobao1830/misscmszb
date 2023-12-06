@@ -133,7 +133,7 @@ public class AuthorizeVerifyResolverInterceptor implements AuthorizeVerifyResolv
         } catch (AlgorithmMismatchException | SignatureVerificationException | JWTDecodeException | InvalidClaimException e) {
             throw new TokenInvalidException(10042);
         }
-        return false;
+        return getClaim(claims);
     }
 
     /**
