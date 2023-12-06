@@ -1,6 +1,7 @@
 package com.zb.misscmszb.controller.cms;
 
 import com.zb.misscmszb.core.annotation.LoginRequired;
+import com.zb.misscmszb.core.annotation.RefreshRequired;
 import com.zb.misscmszb.core.local.LocalUser;
 import com.zb.misscmszb.dto.user.LoginDTO;
 import com.zb.misscmszb.core.exception.NotFoundException;
@@ -82,5 +83,15 @@ public class UserController {
         UserDO user = LocalUser.getLocalUser();
         List<GroupDO> groups = groupService.getUserGroupsByUserId(user.getId());
         return new UserInfoVO(user, groups);
+    }
+
+    /**
+     * 刷新令牌
+     */
+    @GetMapping("/refresh")
+    @RefreshRequired
+    public Tokens getRefreshToken() {
+        UserDO user = LocalUser.getLocalUser();
+        return jwt.generateTokens(user.getId());
     }
 }
