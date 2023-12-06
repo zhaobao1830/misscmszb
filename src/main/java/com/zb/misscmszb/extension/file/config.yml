@@ -3,7 +3,7 @@
 cms:
   file:
     # 文件上传后，访问域名配置
-    domain: http://localhost:5000/
+    domain: http://localhost:9092/
     # 禁止某些类型文件上传
     exclude:
     # 允许某些类型文件上传
