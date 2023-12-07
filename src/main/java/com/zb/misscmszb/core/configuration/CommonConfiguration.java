@@ -2,6 +2,7 @@ package com.zb.misscmszb.core.configuration;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.zb.misscmszb.bean.PermissionMetaCollector;
+import com.zb.misscmszb.core.interceptors.RequestLogInterceptor;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +12,11 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class CommonConfiguration {
+
+    @Bean
+    public RequestLogInterceptor requestLogInterceptor() {
+        return new RequestLogInterceptor();
+    }
 
     /**
      * 记录每个被 @PermissionMeta 记录的信息，在beans的后置调用

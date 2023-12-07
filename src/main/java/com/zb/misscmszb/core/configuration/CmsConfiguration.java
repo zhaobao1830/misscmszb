@@ -1,8 +1,10 @@
 package com.zb.misscmszb.core.configuration;
 
 import com.zb.misscmszb.core.interceptors.AuthorizeInterceptor;
+import com.zb.misscmszb.core.interceptors.LogInterceptor;
 import com.zb.misscmszb.extension.token.DoubleJWT;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,5 +43,11 @@ public class CmsConfiguration {
     public AuthorizeInterceptor authInterceptor() {
         String[] excludeMethods = properties.getExcludeMethods();
         return new AuthorizeInterceptor(excludeMethods);
+    }
+
+    @Bean
+    @ConditionalOnProperty(prefix = "zb.cms", value = "logger-enabled", havingValue = "true")
+    public LogInterceptor logInterceptor() {
+        return new LogInterceptor();
     }
 }
