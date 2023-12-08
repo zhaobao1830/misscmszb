@@ -1,6 +1,7 @@
 package com.zb.misscmszb.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zb.misscmszb.dto.user.ChangePasswordDTO;
 import com.zb.misscmszb.dto.user.UpdateInfoDTO;
 import com.zb.misscmszb.model.PermissionDO;
 import com.zb.misscmszb.model.UserDO;
@@ -50,4 +51,11 @@ public interface UserService extends IService<UserDO> {
      * @return true代表存在
      */
     boolean checkUserExistByUsername(String username);
+
+    /**
+     * 修改用户密码
+     *
+     * @param validator 修改密码校验器
+     */
+    void changeUserPassword(ChangePasswordDTO validator);
 }

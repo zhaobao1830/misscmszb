@@ -3,6 +3,7 @@ package com.zb.misscmszb.controller.cms;
 import com.zb.misscmszb.core.annotation.LoginRequired;
 import com.zb.misscmszb.core.annotation.RefreshRequired;
 import com.zb.misscmszb.core.local.LocalUser;
+import com.zb.misscmszb.dto.user.ChangePasswordDTO;
 import com.zb.misscmszb.dto.user.LoginDTO;
 import com.zb.misscmszb.core.exception.NotFoundException;
 import com.zb.misscmszb.core.exception.ParameterException;
@@ -93,5 +94,15 @@ public class UserController {
     public Tokens getRefreshToken() {
         UserDO user = LocalUser.getLocalUser();
         return jwt.generateTokens(user.getId());
+    }
+
+    /**
+     * 修改密码
+     */
+    @PostMapping("/change_password")
+    @LoginRequired
+    public UpdatedVO updatePassword(@RequestBody @Validated ChangePasswordDTO validator) {
+        userService.changeUserPassword(validator);
+        return new UpdatedVO(4);
     }
 }

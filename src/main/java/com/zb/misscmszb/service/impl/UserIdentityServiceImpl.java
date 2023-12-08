@@ -44,4 +44,20 @@ public class UserIdentityServiceImpl extends ServiceImpl<UserIdentityMapper, Use
         wrapper.lambda().eq(UserIdentityDO::getUserId, userId);
         return this.baseMapper.update(userIdentity, wrapper) > 0;
     }
+
+    /**
+     * 修改密码
+     *
+     * @param userId   用户id
+     * @param password 新密码
+     * @return 是否成功
+     */
+    @Override
+    public boolean changePassword(Integer userId, String password) {
+        String encrypted = EncryptUtil.encrypt(password);
+        UserIdentityDO userIdentity = UserIdentityDO.builder().credential(encrypted).build();
+        QueryWrapper<UserIdentityDO> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(UserIdentityDO::getUserId, userId);
+        return this.baseMapper.update(userIdentity, wrapper) > 0;
+    }
 }

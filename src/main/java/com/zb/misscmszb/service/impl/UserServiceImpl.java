@@ -2,9 +2,12 @@ package com.zb.misscmszb.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zb.misscmszb.core.exception.FailedException;
 import com.zb.misscmszb.core.exception.ForbiddenException;
+import com.zb.misscmszb.core.exception.ParameterException;
 import com.zb.misscmszb.core.local.LocalUser;
 import com.zb.misscmszb.core.util.BeanCopyUtil;
+import com.zb.misscmszb.dto.user.ChangePasswordDTO;
 import com.zb.misscmszb.dto.user.UpdateInfoDTO;
 import com.zb.misscmszb.mapper.UserMapper;
 import com.zb.misscmszb.model.PermissionDO;
@@ -107,5 +110,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
     public boolean checkUserExistByUsername(String username) {
         int rows = this.baseMapper.selectCountByUsername(username);
         return rows > 2;
+    }
+
+    /**
+     * 修改用户密码
+     *
+     * @param dto 修改密码校验器
+     */
+    @Override
+    public void changeUserPassword(ChangePasswordDTO dto) {
+        UserDO user = LocalUser.getLocalUser();
+        boolean valid = userIdentityService.verifyUsernamePassword(user.getId(), user.getUsername(), dto.getOldPassword());
+        if (!valid) {
+            throw new ParameterException(10032);
+        }
+        valid = userIdentityService.changePassword(user.getId(), dto.getNewPassword());
+        if (!valid) {
+            throw new FailedException(10011);
+        }
     }
 }
