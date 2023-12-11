@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 分组服务实现类
@@ -87,5 +88,30 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
     @Override
     public List<GroupDO> getUserGroupsByUserId(Integer userId) {
         return this.baseMapper.selectGroupsByUserId(userId);
+    }
+
+    /**
+     * 通过id检查分组是否存在
+     *
+     * @param id 分组id
+     * @return 是否存在
+     */
+    @Override
+    public boolean checkGroupExistById(Integer id) {
+        return this.baseMapper.selectCountById(id) > 0;
+    }
+
+    /**
+     * 获得分组下所有用户的id
+     *
+     * @param id 分组id
+     * @return 用户id
+     */
+    @Override
+    public List<Integer> getGroupUserIds(Integer id) {
+        QueryWrapper<UserGroupDO> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(UserGroupDO::getGroupId, id);
+        List<UserGroupDO> list = userGroupMapper.selectList(wrapper);
+        return list.stream().map(UserGroupDO::getGroupId).collect(Collectors.toList());
     }
 }

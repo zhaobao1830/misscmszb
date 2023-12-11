@@ -50,4 +50,20 @@ public interface GroupService extends IService<GroupDO> {
      * @return 所有分组
      */
     List<GroupDO> getUserGroupsByUserId(Integer userId);
+
+    /**
+     * 通过id检查分组是否存在
+     *
+     * @param id 分组id
+     * @return 是否存在
+     */
+    boolean checkGroupExistById(Integer id);
+
+    /**
+     * 获得分组下所有用户的id
+     *
+     * @param id 分组id
+     * @return 用户id
+     */
+    List<Integer> getGroupUserIds(Integer id);
 }

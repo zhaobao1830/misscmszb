@@ -46,4 +46,8 @@
                       AND u.is_deleted = 0
                 )
     </select>
+
+    <select id="selectCountById" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        SELECT COUNT(*) AS count FROM lin_group WHERE is_deleted = 0 AND id = #{id}
+    </select>
 </mapper>

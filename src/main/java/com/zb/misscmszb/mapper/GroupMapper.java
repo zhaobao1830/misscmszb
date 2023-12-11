@@ -19,4 +19,12 @@ public interface GroupMapper extends BaseMapper<GroupDO> {
      * @return 所有分组id
      */
     List<Integer> selectUserGroupIds(@Param("userId") Integer userId);
+
+    /**
+     * 通过id获得分组个数
+     *
+     * @param id id
+     * @return 个数
+     */
+    int selectCountById(@Param("id") Integer id);
 }
