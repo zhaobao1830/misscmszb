@@ -114,4 +114,17 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
         List<UserGroupDO> list = userGroupMapper.selectList(wrapper);
         return list.stream().map(UserGroupDO::getGroupId).collect(Collectors.toList());
     }
+
+    /**
+     * 通过名称检查分组是否存在
+     *
+     * @param name 分组名
+     * @return 是否存在
+     */
+    @Override
+    public boolean checkGroupExistByName(String name) {
+        QueryWrapper<GroupDO> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(GroupDO::getName, name);
+        return baseMapper.selectCount(wrapper) > 0;
+    }
 }

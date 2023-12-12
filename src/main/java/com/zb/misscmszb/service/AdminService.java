@@ -1,5 +1,6 @@
 package com.zb.misscmszb.service;
 
+import com.zb.misscmszb.dto.admin.UpdateGroupDTO;
 import com.zb.misscmszb.model.GroupDO;
 
 import java.util.List;
@@ -18,7 +19,14 @@ public interface AdminService {
      * 删除分组
      *
      * @param id 分组id
-     * @return 是否成功
+     * @return
      */
     boolean deleteGroup(Integer id);
+
+    /**
+     * 更新分组
+     *
+     * @param dto 分组信息
+     */
+    boolean updateGroup(UpdateGroupDTO dto);
 }

@@ -66,4 +66,12 @@ public interface GroupService extends IService<GroupDO> {
      * @return 用户id
      */
     List<Integer> getGroupUserIds(Integer id);
+
+    /**
+     * 通过名称检查分组是否存在
+     *
+     * @param name 分组名
+     * @return 是否存在
+     */
+    boolean checkGroupExistByName(String name);
 }
