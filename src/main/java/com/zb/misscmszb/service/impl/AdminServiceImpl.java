@@ -4,20 +4,39 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zb.misscmszb.core.enumeration.GroupLevelEnum;
 import com.zb.misscmszb.core.exception.ForbiddenException;
 import com.zb.misscmszb.core.exception.NotFoundException;
+import com.zb.misscmszb.dto.admin.DispatchPermissionsDTO;
+import com.zb.misscmszb.dto.admin.NewGroupDTO;
+import com.zb.misscmszb.dto.admin.RemovePermissionsDTO;
 import com.zb.misscmszb.dto.admin.UpdateGroupDTO;
+import com.zb.misscmszb.mapper.GroupPermissionMapper;
 import com.zb.misscmszb.model.GroupDO;
+import com.zb.misscmszb.model.GroupPermissionDO;
+import com.zb.misscmszb.model.PermissionDO;
 import com.zb.misscmszb.service.AdminService;
 import com.zb.misscmszb.service.GroupService;
+import com.zb.misscmszb.service.PermissionService;
+import com.zb.misscmszb.vo.GroupPermissionVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class AdminServiceImpl implements AdminService {
 
     @Autowired
     private GroupService groupService;
+
+    @Autowired
+    private PermissionService permissionService;
+
+    @Autowired
+    private GroupPermissionMapper groupPermissionMapper;
 
     /**
      * 获得所有分组信息
@@ -72,6 +91,93 @@ public class AdminServiceImpl implements AdminService {
         GroupDO groupDO1 = GroupDO.builder().name(dto.getName()).info(dto.getInfo()).build();
         groupDO1.setId(dto.getId());
         return groupService.updateById(groupDO1);
+    }
+
+    /**
+     * 获得所有权限信息
+     */
+    @Override
+    public List<PermissionDO> getAllPermissions() {
+        QueryWrapper<PermissionDO> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(PermissionDO::getMount, true);
+        return permissionService.list(wrapper);
+    }
+
+    /**
+     * 获得结构化的权限信息
+     */
+    @Override
+    public Map<String, List<PermissionDO>> getAllStructuralPermissions() {
+        List<PermissionDO> permissions = getAllPermissions();
+        Map<String, List<PermissionDO>> res = new HashMap<>();
+        permissions.forEach(permission -> {
+            if (res.containsKey(permission.getModule())) {
+                res.get(permission.getModule()).add(permission);
+            } else {
+                ArrayList<PermissionDO> t = new ArrayList<>();
+                t.add(permission);
+                res.put(permission.getModule(), t);
+            }
+        });
+        return res;
+    }
+
+    /**
+     * 获得分组数据
+     *
+     * @param id 分组id
+     * @return 分组数据
+     */
+    @Override
+    public GroupPermissionVo getGroup(Integer id) {
+        throwGroupNotExistById(id);
+        return groupService.getGroupAndPermissions(id);
+    }
+
+    /**
+     * 新建分组
+     *
+     * @param dto 分组信息
+     * @return 是否成功
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public boolean createGroup(NewGroupDTO dto) {
+        throwGroupNameExist(dto.getName());
+        GroupDO group = GroupDO.builder().name(dto.getName()).info(dto.getInfo()).build();
+        groupService.save(group);
+        if (dto.getPermissionIds() != null && !dto.getPermissionIds().isEmpty()) {
+            List<GroupPermissionDO> relations = dto.getPermissionIds().stream()
+                    .map(id -> new GroupPermissionDO(group.getId(), id))
+                    .collect(Collectors.toList());
+            groupPermissionMapper.insertBatch(relations);
+        }
+        return true;
+    }
+
+    /**
+     * 分配权限
+     *
+     * @param dto 数据
+     * @return 是否成功
+     */
+    @Override
+    public boolean dispatchPermissions(DispatchPermissionsDTO dto) {
+        List<GroupPermissionDO> relations = dto.getPermissionIds().stream()
+                .map(id -> new GroupPermissionDO(dto.getGroupId(), id))
+                .collect(Collectors.toList());
+        return groupPermissionMapper.insertBatch(relations) > 0;
+    }
+
+    /**
+     * 删除权限
+     *
+     * @param dto 数据
+     * @return 是否成功
+     */
+    @Override
+    public boolean removePermissions(RemovePermissionsDTO dto) {
+        return groupPermissionMapper.deleteBatchByGroupIdAndPermissionId(dto.getGroupId(), dto.getPermissionIds()) > 0;
     }
 
     private void throwGroupNotExistById(Integer id) {

@@ -60,4 +60,15 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
         });
         return structualPermissions;
     }
+
+    /**
+     * 通过分组id得到分组的权限
+     *
+     * @param groupId 分组id
+     * @return 权限
+     */
+    @Override
+    public List<PermissionDO> getPermissionByGroupId(Integer groupId) {
+        return baseMapper.selectPermissionsByGroupId(groupId);
+    }
 }

@@ -6,8 +6,11 @@ import com.zb.misscmszb.core.enumeration.GroupLevelEnum;
 import com.zb.misscmszb.mapper.GroupMapper;
 import com.zb.misscmszb.mapper.UserGroupMapper;
 import com.zb.misscmszb.model.GroupDO;
+import com.zb.misscmszb.model.PermissionDO;
 import com.zb.misscmszb.model.UserGroupDO;
 import com.zb.misscmszb.service.GroupService;
+import com.zb.misscmszb.service.PermissionService;
+import com.zb.misscmszb.vo.GroupPermissionVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +25,9 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
 
     @Autowired
     private UserGroupMapper userGroupMapper;
+
+    @Autowired
+    private PermissionService permissionService;
 
     /**
      * 获得用户的所有分组id
@@ -126,5 +132,18 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
         QueryWrapper<GroupDO> wrapper = new QueryWrapper<>();
         wrapper.lambda().eq(GroupDO::getName, name);
         return baseMapper.selectCount(wrapper) > 0;
+    }
+
+    /**
+     * 获得分组及其权限
+     *
+     * @param id 分组id
+     * @return 分组及权限
+     */
+    @Override
+    public GroupPermissionVo getGroupAndPermissions(Integer id) {
+        GroupDO groupDO = baseMapper.selectById(id);
+        List<PermissionDO> permissionDOList = permissionService.getPermissionByGroupId(id);
+        return new GroupPermissionVo(groupDO, permissionDOList);
     }
 }

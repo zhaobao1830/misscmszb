@@ -3,6 +3,7 @@ package com.zb.misscmszb.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zb.misscmszb.core.enumeration.GroupLevelEnum;
 import com.zb.misscmszb.model.GroupDO;
+import com.zb.misscmszb.vo.GroupPermissionVo;
 
 import java.util.List;
 
@@ -74,4 +75,12 @@ public interface GroupService extends IService<GroupDO> {
      * @return 是否存在
      */
     boolean checkGroupExistByName(String name);
+
+    /**
+     * 获得分组及其权限
+     *
+     * @param id 分组id
+     * @return 分组及权限
+     */
+    GroupPermissionVo getGroupAndPermissions(Integer id);
 }
