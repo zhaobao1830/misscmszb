@@ -2,20 +2,26 @@ package com.zb.misscmszb.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zb.misscmszb.core.enumeration.GroupLevelEnum;
 import com.zb.misscmszb.core.exception.FailedException;
 import com.zb.misscmszb.core.exception.ForbiddenException;
+import com.zb.misscmszb.core.exception.NotFoundException;
 import com.zb.misscmszb.core.exception.ParameterException;
 import com.zb.misscmszb.core.local.LocalUser;
 import com.zb.misscmszb.core.util.BeanCopyUtil;
 import com.zb.misscmszb.dto.user.ChangePasswordDTO;
+import com.zb.misscmszb.dto.user.RegisterDTO;
 import com.zb.misscmszb.dto.user.UpdateInfoDTO;
+import com.zb.misscmszb.mapper.UserGroupMapper;
 import com.zb.misscmszb.mapper.UserMapper;
 import com.zb.misscmszb.model.PermissionDO;
 import com.zb.misscmszb.model.UserDO;
+import com.zb.misscmszb.model.UserGroupDO;
 import com.zb.misscmszb.service.GroupService;
 import com.zb.misscmszb.service.PermissionService;
 import com.zb.misscmszb.service.UserIdentityService;
 import com.zb.misscmszb.service.UserService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +30,7 @@ import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 用户服务实现类
@@ -39,6 +46,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
 
     @Autowired
     private PermissionService permissionService;
+
+    @Autowired
+    private UserGroupMapper userGroupMapper;
 
     /**
      * 通过用户名查找用户
@@ -113,6 +123,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
     }
 
     /**
+     * 根据用户名检查用户是否存在
+     *
+     * @param email 邮箱
+     * @return true代表存在
+     */
+    @Override
+    public boolean checkUserExistByEmail(String email) {
+        QueryWrapper<UserDO> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(UserDO::getEmail, email);
+        Long rows = this.baseMapper.selectCount(wrapper);
+        return rows > 0;
+    }
+
+    /**
      * 修改用户密码
      *
      * @param dto 修改密码校验器
@@ -127,6 +151,66 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         valid = userIdentityService.changePassword(user.getId(), dto.getNewPassword());
         if (!valid) {
             throw new FailedException(10011);
+        }
+    }
+
+    /**
+     * 新建用户
+     *
+     * @param validator 新建用户校验器
+     * @return 被创建的用户
+     */
+    @Transactional
+    @Override
+    public UserDO createUser(RegisterDTO validator) {
+        boolean exist = this.checkUserExistByUsername(validator.getUsername());
+        if (exist) {
+            throw new ForbiddenException(10071);
+        }
+        if (StringUtils.hasText(validator.getEmail())) {
+            exist = this.checkUserExistByEmail(validator.getEmail());
+            if (exist) {
+                throw new ForbiddenException(10076);
+            }
+        } else {
+            // bug 前端如果传入的email为 "" 时，由于数据库中存在""的email，会报duplication错误
+            // 所以如果email为blank，必须显示设置为 null
+            validator.setEmail(null);
+        }
+        UserDO user = new UserDO();
+        BeanUtils.copyProperties(validator, user);
+        this.baseMapper.insert(user);
+        if (validator.getGroupIds() != null && !validator.getGroupIds().isEmpty()) {
+            checkGroupsValid(validator.getGroupIds());
+            checkGroupsExist(validator.getGroupIds());
+            List<UserGroupDO> relations = validator.getGroupIds()
+                    .stream()
+                    .map(groupId -> new UserGroupDO(user.getId(), groupId))
+                    .collect(Collectors.toList());
+            userGroupMapper.insertBatch(relations);
+        } else {
+            // id为2的分组为游客分组
+            Integer guestGroupId = groupService.getParticularGroupIdByLevel(GroupLevelEnum.GUEST);
+            UserGroupDO relation = new UserGroupDO(user.getId(), guestGroupId);
+            userGroupMapper.insert(relation);
+        }
+        userIdentityService.createUsernamePasswordIdentity(user.getId(), validator.getUsername(), validator.getPassword());
+        return user;
+    }
+
+    private void checkGroupsValid(List<Integer> ids) {
+        Integer rootGroupId = groupService.getParticularGroupIdByLevel(GroupLevelEnum.ROOT);
+        boolean anyMatch = ids.stream().anyMatch(it -> it.equals(rootGroupId));
+        if (anyMatch) {
+            throw new ForbiddenException(10073);
+        }
+    }
+
+    private void checkGroupsExist(List<Integer> ids) {
+        for (Integer id : ids) {
+            if (!groupService.checkGroupExistById(id)) {
+                throw new NotFoundException(10023);
+            }
         }
     }
 }

@@ -1,9 +1,6 @@
 package com.zb.misscmszb.service;
 
-import com.zb.misscmszb.dto.admin.DispatchPermissionsDTO;
-import com.zb.misscmszb.dto.admin.NewGroupDTO;
-import com.zb.misscmszb.dto.admin.RemovePermissionsDTO;
-import com.zb.misscmszb.dto.admin.UpdateGroupDTO;
+import com.zb.misscmszb.dto.admin.*;
 import com.zb.misscmszb.model.GroupDO;
 import com.zb.misscmszb.model.PermissionDO;
 import com.zb.misscmszb.vo.GroupPermissionVo;
@@ -77,4 +74,13 @@ public interface AdminService {
      * @return 是否成功
      */
     boolean removePermissions(RemovePermissionsDTO dto);
+
+    /**
+     * 更新用户信息
+     *
+     * @param validator 数据信息
+     * @return 是否成功
+     */
+    boolean updateUserInfo(UpdateUserInfoDTO validator);
+
 }

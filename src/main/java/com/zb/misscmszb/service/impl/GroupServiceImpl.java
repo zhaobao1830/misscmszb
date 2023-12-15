@@ -3,6 +3,7 @@ package com.zb.misscmszb.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zb.misscmszb.core.enumeration.GroupLevelEnum;
+import com.zb.misscmszb.core.exception.ForbiddenException;
 import com.zb.misscmszb.mapper.GroupMapper;
 import com.zb.misscmszb.mapper.UserGroupMapper;
 import com.zb.misscmszb.model.GroupDO;
@@ -145,5 +146,49 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
         GroupDO groupDO = baseMapper.selectById(id);
         List<PermissionDO> permissionDOList = permissionService.getPermissionByGroupId(id);
         return new GroupPermissionVo(groupDO, permissionDOList);
+    }
+
+    /**
+     * 删除用户与分组直接的关联
+     *
+     * @param userId    用户id
+     * @param deleteIds 分组id
+     */
+    @Override
+    public boolean deleteUserGroupRelations(Integer userId, List<Integer> deleteIds) {
+        if (deleteIds == null || deleteIds.isEmpty()) {
+            return true;
+        }
+        if (checkIsRootByUserId(userId)) {
+            throw new ForbiddenException(10078);
+        }
+        QueryWrapper<UserGroupDO> wrapper = new QueryWrapper<>();
+        wrapper.lambda()
+                .eq(UserGroupDO::getUserId, userId)
+                .in(UserGroupDO::getGroupId, deleteIds);
+        return userGroupMapper.delete(wrapper) > 0;
+    }
+
+    /**
+     * 添加用户与分组直接的关联
+     *
+     * @param userId 用户id
+     * @param addIds 分组id
+     */
+    @Override
+    public boolean addUserGroupRelations(Integer userId, List<Integer> addIds) {
+        if (addIds == null || addIds.isEmpty()) {
+            return true;
+        }
+        boolean ok = checkGroupExistByIds(addIds);
+        if (!ok) {
+            throw new ForbiddenException(10077);
+        }
+        List<UserGroupDO> relations = addIds.stream().map(it -> new UserGroupDO(userId, it)).collect(Collectors.toList());
+        return userGroupMapper.insertBatch(relations) > 0;
+    }
+
+    private boolean checkGroupExistByIds(List<Integer> ids) {
+        return ids.stream().allMatch(this::checkGroupExistById);
     }
 }

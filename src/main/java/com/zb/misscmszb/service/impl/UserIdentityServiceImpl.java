@@ -13,6 +13,26 @@ import org.springframework.stereotype.Service;
 public class UserIdentityServiceImpl extends ServiceImpl<UserIdentityMapper, UserIdentityDO> implements UserIdentityService {
 
     /**
+     * 新建用户认证信息
+     *
+     * @param userId       用户id
+     * @param identityType 认证类型
+     * @param identifier   认证（用户名）
+     * @param credential   凭证（密码）
+     * @return 用户认证
+     */
+    @Override
+    public UserIdentityDO createIdentity(Integer userId, String identityType, String identifier, String credential) {
+        UserIdentityDO userIdentity = new UserIdentityDO();
+        userIdentity.setUserId(userId);
+        userIdentity.setIdentityType(identityType);
+        userIdentity.setIdentifier(identifier);
+        userIdentity.setCredential(credential);
+        baseMapper.insert(userIdentity);
+        return userIdentity;
+    }
+
+    /**
      * 验证用户认证信息 (USERNAME_PASSWORD)
      *
      * @param userId   用户id
@@ -59,5 +79,20 @@ public class UserIdentityServiceImpl extends ServiceImpl<UserIdentityMapper, Use
         QueryWrapper<UserIdentityDO> wrapper = new QueryWrapper<>();
         wrapper.lambda().eq(UserIdentityDO::getUserId, userId);
         return this.baseMapper.update(userIdentity, wrapper) > 0;
+    }
+
+    /**
+     * 新建用户认证信息 (USERNAME_PASSWORD)
+     *
+     * @param userId   用户id
+     * @param username 用户名
+     * @param password 密码
+     * @return 用户认证
+     */
+    @Override
+    public UserIdentityDO createUsernamePasswordIdentity(Integer userId, String username, String password) {
+        // 密码加密
+        password = EncryptUtil.encrypt(password);
+        return createIdentity(userId, IdentityConstant.USERNAME_PASSWORD_IDENTITY, username, password);
     }
 }

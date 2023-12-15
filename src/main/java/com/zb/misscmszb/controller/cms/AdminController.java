@@ -1,19 +1,15 @@
 package com.zb.misscmszb.controller.cms;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.zb.misscmszb.core.annotation.AdminRequired;
 import com.zb.misscmszb.core.annotation.PermissionMeta;
 import com.zb.misscmszb.core.annotation.PermissionModule;
-import com.zb.misscmszb.dto.admin.DispatchPermissionsDTO;
-import com.zb.misscmszb.dto.admin.NewGroupDTO;
-import com.zb.misscmszb.dto.admin.RemovePermissionsDTO;
-import com.zb.misscmszb.dto.admin.UpdateGroupDTO;
+import com.zb.misscmszb.dto.admin.*;
 import com.zb.misscmszb.model.GroupDO;
 import com.zb.misscmszb.model.PermissionDO;
+import com.zb.misscmszb.model.UserDO;
 import com.zb.misscmszb.service.AdminService;
-import com.zb.misscmszb.vo.CreatedVO;
-import com.zb.misscmszb.vo.DeletedVO;
-import com.zb.misscmszb.vo.GroupPermissionVo;
-import com.zb.misscmszb.vo.UpdatedVO;
+import com.zb.misscmszb.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.Positive;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 管理员
@@ -32,6 +29,43 @@ public class AdminController {
 
     @Autowired
     private AdminService adminService;
+
+    @AdminRequired
+    @GetMapping("/users")
+    @PermissionMeta(value = "查询所有用户", mount = false)
+    public PageResponseVO<UserInfoVO> getUsers(
+            @Validated QueryUsersDTO dto) {
+        IPage<UserDO> iPage = adminService.getUserPageByGroupId(dto.getGroupId(), dto.getCount(), dto.getPage());
+        List<UserInfoVO> userInfos = iPage.getRecords().stream().map(user -> {
+            List<GroupDO> groups = groupService.getUserGroupsByUserId(user.getId());
+            return new UserInfoVO(user, groups);
+        }).collect(Collectors.toList());
+        return PageUtil.build(iPage, userInfos);
+    }
+
+    @AdminRequired
+    @PutMapping("/user/{id}/password")
+    @PermissionMeta(value = "修改用户密码", mount = false)
+    public UpdatedVO changeUserPassword(@PathVariable @Positive(message = "{id.positive}") Integer id, @RequestBody @Validated ResetPasswordDTO validator) {
+        adminService.changeUserPassword(id, validator);
+        return new UpdatedVO(4);
+    }
+
+    @AdminRequired
+    @GetMapping("/user/{id}")
+    @PermissionMeta(value = "删除用户", mount = false)
+    public DeletedVO deleteUser(@PathVariable @Positive(message = "{id.positive}") Integer id) {
+        adminService.deleteUser(id);
+        return new DeletedVO(5);
+    }
+
+    @AdminRequired
+    @PostMapping("/user/update")
+    @PermissionMeta(value = "管理员更新用户信息", mount = false)
+    public UpdatedVO updateUser(@RequestBody @Validated UpdateUserInfoDTO validator) {
+        adminService.updateUserInfo(validator);
+        return new UpdatedVO(6);
+    }
 
     @AdminRequired
     @GetMapping("/permission")

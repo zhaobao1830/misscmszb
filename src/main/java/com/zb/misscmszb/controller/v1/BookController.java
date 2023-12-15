@@ -63,7 +63,7 @@ public class BookController {
     }
 
 
-    @PostMapping("/delete/{id}")
+    @GetMapping("/delete/{id}")
     @GroupRequired
     @PermissionMeta(value = "删除图书", module = "图书")
     public DeletedVO deleteBook(@PathVariable("id") @Positive(message = "{id.positive}") Integer id) {

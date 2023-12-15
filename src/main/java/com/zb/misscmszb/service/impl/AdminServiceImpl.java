@@ -4,10 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zb.misscmszb.core.enumeration.GroupLevelEnum;
 import com.zb.misscmszb.core.exception.ForbiddenException;
 import com.zb.misscmszb.core.exception.NotFoundException;
-import com.zb.misscmszb.dto.admin.DispatchPermissionsDTO;
-import com.zb.misscmszb.dto.admin.NewGroupDTO;
-import com.zb.misscmszb.dto.admin.RemovePermissionsDTO;
-import com.zb.misscmszb.dto.admin.UpdateGroupDTO;
+import com.zb.misscmszb.dto.admin.*;
 import com.zb.misscmszb.mapper.GroupPermissionMapper;
 import com.zb.misscmszb.model.GroupDO;
 import com.zb.misscmszb.model.GroupPermissionDO;
@@ -178,6 +175,28 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public boolean removePermissions(RemovePermissionsDTO dto) {
         return groupPermissionMapper.deleteBatchByGroupIdAndPermissionId(dto.getGroupId(), dto.getPermissionIds()) > 0;
+    }
+
+    /**
+     * 更新用户信息
+     *
+     * @param validator 数据信息
+     * @return 是否成功
+     */
+    @Override
+    public boolean updateUserInfo(UpdateUserInfoDTO validator) {
+        List<Integer> newGroupIds = validator.getGroupIds();
+        Integer rootGroupId = groupService.getParticularGroupIdByLevel(GroupLevelEnum.ROOT);
+        boolean anyMatch = newGroupIds.stream().anyMatch(it -> it.equals(rootGroupId));
+        if (anyMatch) {
+            throw new ForbiddenException(10073);
+        }
+        List<Integer> existGroupIds = groupService.getUserGroupIdsByUserId(validator.getId());
+        // 删除existGroupIds有，而newGroupIds没有的
+        List<Integer> deleteIds = existGroupIds.stream().filter(it -> !newGroupIds.contains(it)).collect(Collectors.toList());
+        // 添加newGroupIds有，而existGroupIds没有的
+        List<Integer> addIds = newGroupIds.stream().filter(it -> !existGroupIds.contains(it)).collect(Collectors.toList());
+        return groupService.deleteUserGroupRelations(validator.getId(), deleteIds) && groupService.addUserGroupRelations(validator.getId(), addIds);
     }
 
     private void throwGroupNotExistById(Integer id) {

@@ -1,5 +1,6 @@
 package com.zb.misscmszb.controller.cms;
 
+import com.zb.misscmszb.core.annotation.AdminRequired;
 import com.zb.misscmszb.core.annotation.LoginRequired;
 import com.zb.misscmszb.core.annotation.RefreshRequired;
 import com.zb.misscmszb.core.local.LocalUser;
@@ -7,6 +8,7 @@ import com.zb.misscmszb.dto.user.ChangePasswordDTO;
 import com.zb.misscmszb.dto.user.LoginDTO;
 import com.zb.misscmszb.core.exception.NotFoundException;
 import com.zb.misscmszb.core.exception.ParameterException;
+import com.zb.misscmszb.dto.user.RegisterDTO;
 import com.zb.misscmszb.dto.user.UpdateInfoDTO;
 import com.zb.misscmszb.extension.token.DoubleJWT;
 import com.zb.misscmszb.extension.token.Tokens;
@@ -15,6 +17,7 @@ import com.zb.misscmszb.model.UserDO;
 import com.zb.misscmszb.service.GroupService;
 import com.zb.misscmszb.service.UserIdentityService;
 import com.zb.misscmszb.service.UserService;
+import com.zb.misscmszb.vo.CreatedVO;
 import com.zb.misscmszb.vo.UpdatedVO;
 import com.zb.misscmszb.vo.UserInfoVO;
 import com.zb.misscmszb.vo.UserPermissionVO;
@@ -40,6 +43,16 @@ public class UserController {
 
     @Autowired
     private DoubleJWT jwt;
+
+    /**
+     * 用户注册
+     */
+    @PostMapping("/register")
+    @AdminRequired
+    public CreatedVO register(@RequestBody @Validated RegisterDTO validator) {
+        userService.createUser(validator);
+        return new CreatedVO(11);
+    }
 
     @PostMapping("/login")
     public Tokens login(@RequestBody LoginDTO loginDTO) {

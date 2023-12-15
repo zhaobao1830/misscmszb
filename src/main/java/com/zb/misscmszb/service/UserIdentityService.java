@@ -6,6 +6,20 @@ import com.zb.misscmszb.model.UserIdentityDO;
 public interface UserIdentityService extends IService<UserIdentityDO> {
 
     /**
+     * 新建用户认证信息
+     *
+     * @param userId       用户id
+     * @param identityType 认证类型
+     * @param identifier   认证（用户名）
+     * @param credential   凭证（密码）
+     * @return 用户认证
+     */
+    UserIdentityDO createIdentity(Integer userId,
+                                  String identityType,
+                                  String identifier,
+                                  String credential);
+
+    /**
      * 验证用户认证信息 (USERNAME_PASSWORD)
      *
      * @param userId   用户id
@@ -32,4 +46,16 @@ public interface UserIdentityService extends IService<UserIdentityDO> {
      * @return 是否成功
      */
     boolean changePassword(Integer userId, String password);
+
+    /**
+     * 新建用户认证信息 (USERNAME_PASSWORD)
+     *
+     * @param userId   用户id
+     * @param username 用户名
+     * @param password 密码
+     * @return 用户认证
+     */
+    UserIdentityDO createUsernamePasswordIdentity(Integer userId,
+                                                  String username,
+                                                  String password);
 }

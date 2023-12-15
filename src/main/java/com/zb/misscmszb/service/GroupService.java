@@ -83,4 +83,20 @@ public interface GroupService extends IService<GroupDO> {
      * @return 分组及权限
      */
     GroupPermissionVo getGroupAndPermissions(Integer id);
+
+    /**
+     * 删除用户与分组直接的关联
+     *
+     * @param userId    用户id
+     * @param deleteIds 分组id
+     */
+    boolean deleteUserGroupRelations(Integer userId, List<Integer> deleteIds);
+
+    /**
+     * 添加用户与分组直接的关联
+     *
+     * @param userId 用户id
+     * @param addIds 分组id
+     */
+    boolean addUserGroupRelations(Integer userId, List<Integer> addIds);
 }
