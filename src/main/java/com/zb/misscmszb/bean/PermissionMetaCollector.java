@@ -3,6 +3,7 @@ package com.zb.misscmszb.bean;
 import com.zb.misscmszb.core.annotation.*;
 import com.zb.misscmszb.core.enumeration.UserLevel;
 import com.zb.misscmszb.core.util.AnnotationUtil;
+import lombok.Getter;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,13 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class PermissionMetaCollector implements BeanPostProcessor {
 
+    /**
+     * -- GETTER --
+     *  获取路由信息map
+     *
+     * @return 路由信息map
+     */
+    @Getter
     private Map<String, MetaInfo> metaMap = new ConcurrentHashMap<>();
 
     private Map<String, Map<String, Set<String>>> structuralMeta = new ConcurrentHashMap<>();
@@ -78,15 +86,6 @@ public class PermissionMetaCollector implements BeanPostProcessor {
             }
         }
         return bean;
-    }
-
-    /**
-     * 获取路由信息map
-     *
-     * @return 路由信息map
-     */
-    public Map<String, MetaInfo> getMetaMap() {
-        return metaMap;
     }
 
     public MetaInfo findMeta(String key) {
