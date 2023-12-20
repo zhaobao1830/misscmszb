@@ -1,6 +1,8 @@
 package com.zb.misscmszb.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zb.misscmszb.core.mybatis.LinPage;
 import com.zb.misscmszb.dto.user.ChangePasswordDTO;
 import com.zb.misscmszb.dto.user.RegisterDTO;
 import com.zb.misscmszb.dto.user.UpdateInfoDTO;
@@ -75,4 +77,28 @@ public interface UserService extends IService<UserDO> {
      * @return 被创建的用户
      */
     UserDO createUser(RegisterDTO validator);
+
+    /**
+     * 获取超级管理员的id
+     *
+     * @return 超级管理员的id
+     */
+    Integer getRootUserId();
+
+    /**
+     * 根据分组id分页获取用户数据
+     *
+     * @param pager   分页
+     * @param groupId 分组id
+     * @return 数据页
+     */
+    IPage<UserDO> getUserPageByGroupId(LinPage<UserDO> pager, Integer groupId);
+
+    /**
+     * 根据用户id检查用户是否存在
+     *
+     * @param id 用户名
+     * @return true代表存在
+     */
+    boolean checkUserExistById(Integer id);
 }

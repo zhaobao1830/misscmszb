@@ -1,6 +1,7 @@
 package com.zb.misscmszb.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zb.misscmszb.core.enumeration.GroupLevelEnum;
 import com.zb.misscmszb.core.exception.FailedException;
@@ -8,6 +9,7 @@ import com.zb.misscmszb.core.exception.ForbiddenException;
 import com.zb.misscmszb.core.exception.NotFoundException;
 import com.zb.misscmszb.core.exception.ParameterException;
 import com.zb.misscmszb.core.local.LocalUser;
+import com.zb.misscmszb.core.mybatis.LinPage;
 import com.zb.misscmszb.core.util.BeanCopyUtil;
 import com.zb.misscmszb.dto.user.ChangePasswordDTO;
 import com.zb.misscmszb.dto.user.RegisterDTO;
@@ -196,6 +198,48 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         }
         userIdentityService.createUsernamePasswordIdentity(user.getId(), validator.getUsername(), validator.getPassword());
         return user;
+    }
+
+    /**
+     * 获取超级管理员的id
+     *
+     * @return 超级管理员的id
+     */
+    @Override
+    public Integer getRootUserId() {
+        Integer rootGroupId = groupService.getParticularGroupIdByLevel(GroupLevelEnum.ROOT);
+        UserGroupDO userGroupDO = null;
+        if (rootGroupId != 0) {
+            QueryWrapper<UserGroupDO> wrapper = new QueryWrapper<>();
+            wrapper.lambda().eq(UserGroupDO::getGroupId, rootGroupId);
+            userGroupDO = userGroupMapper.selectOne(wrapper);
+        }
+        return userGroupDO == null ? 0 : userGroupDO.getUserId();
+    }
+
+    /**
+     * 根据分组id分页获取用户数据
+     *
+     * @param pager   分页
+     * @param groupId 分组id
+     * @return 数据页
+     */
+    @Override
+    public IPage<UserDO> getUserPageByGroupId(LinPage<UserDO> pager, Integer groupId) {
+        Integer rootGroupId = groupService.getParticularGroupIdByLevel(GroupLevelEnum.ROOT);
+        return this.baseMapper.selectPageByGroupId(pager, groupId, rootGroupId);
+    }
+
+    /**
+     * 根据用户id检查用户是否存在
+     *
+     * @param id 用户名
+     * @return true代表存在
+     */
+    @Override
+    public boolean checkUserExistById(Integer id) {
+        int rows = this.baseMapper.selectCountById(id);
+        return rows > 0;
     }
 
     private void checkGroupsValid(List<Integer> ids) {

@@ -17,4 +17,23 @@
     <select id="selectCountByUsername" parameterType="java.lang.String" resultType="java.lang.Integer">
         SELECT COUNT(*) FROM lin_user as u WHERE u.username = #{username} AND u.is_deleted = 0
     </select>
+
+    <select id="selectPageByGroupId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT u.id, u.username, u.nickname,
+               u.avatar, u.email, u.create_time,
+               u.update_time, u.delete_time
+        FROM lin_user AS u
+        WHERE u.id IN
+              (
+                  SELECT ug.user_id
+                  FROM lin_user_group AS ug
+                  WHERE ug.group_id = #{groupId}
+                    AND ug.group_id != #{rootGroupId}
+              )
+          AND u.is_deleted = 0
+    </select>
+
+    <select id="selectCountById" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM lin_user as u WHERE u.id = #{id} AND u.is_deleted = 0
+    </select>
 </mapper>

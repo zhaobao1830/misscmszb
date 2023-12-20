@@ -4,11 +4,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.zb.misscmszb.core.annotation.AdminRequired;
 import com.zb.misscmszb.core.annotation.PermissionMeta;
 import com.zb.misscmszb.core.annotation.PermissionModule;
+import com.zb.misscmszb.core.util.PageUtil;
 import com.zb.misscmszb.dto.admin.*;
 import com.zb.misscmszb.model.GroupDO;
 import com.zb.misscmszb.model.PermissionDO;
 import com.zb.misscmszb.model.UserDO;
 import com.zb.misscmszb.service.AdminService;
+import com.zb.misscmszb.service.GroupService;
 import com.zb.misscmszb.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -30,6 +32,9 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
 
+    @Autowired
+    private GroupService groupService;
+
     @AdminRequired
     @GetMapping("/users")
     @PermissionMeta(value = "查询所有用户", mount = false)
@@ -44,10 +49,10 @@ public class AdminController {
     }
 
     @AdminRequired
-    @PutMapping("/user/{id}/password")
+    @PostMapping("/user/password")
     @PermissionMeta(value = "修改用户密码", mount = false)
-    public UpdatedVO changeUserPassword(@PathVariable @Positive(message = "{id.positive}") Integer id, @RequestBody @Validated ResetPasswordDTO validator) {
-        adminService.changeUserPassword(id, validator);
+    public UpdatedVO changeUserPassword(@RequestBody @Validated ResetPasswordDTO validator) {
+        adminService.changeUserPassword(validator);
         return new UpdatedVO(4);
     }
 

@@ -1,8 +1,10 @@
 package com.zb.misscmszb.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.zb.misscmszb.dto.admin.*;
 import com.zb.misscmszb.model.GroupDO;
 import com.zb.misscmszb.model.PermissionDO;
+import com.zb.misscmszb.model.UserDO;
 import com.zb.misscmszb.vo.GroupPermissionVo;
 
 import java.util.List;
@@ -83,4 +85,28 @@ public interface AdminService {
      */
     boolean updateUserInfo(UpdateUserInfoDTO validator);
 
+    /**
+     * 通过分组id分页获取用户数据
+     *
+     * @param groupId 分组id
+     * @param count   当前页数目
+     * @param page    当前分页
+     * @return 用户数据
+     */
+    IPage<UserDO> getUserPageByGroupId(Integer groupId, Integer count, Integer page);
+
+    /**
+     * 修改用户密码（重置用户密码）
+     * @param dto id和密码信息
+     * @return 是否修改成功
+     */
+    boolean changeUserPassword(ResetPasswordDTO dto);
+
+    /**
+     * 删除用户
+     *
+     * @param id 用户id
+     * @return 是否删除成功
+     */
+    boolean deleteUser(Integer id);
 }
