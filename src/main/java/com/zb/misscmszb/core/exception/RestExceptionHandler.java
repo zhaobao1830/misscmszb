@@ -290,7 +290,7 @@ public class RestExceptionHandler {
             matchString = matchString
                     .replace("[", "")
                     .replace("]", "");
-            matchString = matchString.replaceAll("\\\"", "") + "字段类型错误";
+            matchString = matchString.replaceAll("\"", "") + "字段类型错误";
             group += matchString;
         }
         return group;
