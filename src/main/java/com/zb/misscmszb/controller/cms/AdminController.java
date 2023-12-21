@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 /**
  * 管理员
  */
+@Validated
 @RestController
 @RequestMapping("/cms/admin")
 @PermissionModule(value = "管理员")

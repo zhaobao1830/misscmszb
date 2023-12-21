@@ -30,6 +30,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/cms/user")
+@Validated
 public class UserController {
 
     @Autowired
