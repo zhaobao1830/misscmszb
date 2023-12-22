@@ -17,12 +17,6 @@ import java.util.Date;
 public class LogServiceImpl extends ServiceImpl<LogMapper, LogDO> implements LogService {
 
     @Override
-    public IPage<LogDO> getLogPage(Integer page, Integer count, String name, Date start, Date end) {
-        LinPage<LogDO> pager = new LinPage<>(page, count);
-        return this.baseMapper.findLogsByUsernameAndRange(pager, name, start, end);
-    }
-
-    @Override
     public IPage<LogDO> searchLogPage(Integer page, Integer count, String name, String keyword, Date start, Date end) {
         LinPage<LogDO> pager = new LinPage<>(page, count);
         return this.baseMapper.searchLogsByUsernameAndKeywordAndRange(pager, name, "%" + keyword + "%", start, end);

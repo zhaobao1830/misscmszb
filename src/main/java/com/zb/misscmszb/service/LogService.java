@@ -12,18 +12,6 @@ import java.util.Date;
 public interface LogService extends IService<LogDO> {
 
     /**
-     * 分页获取日志
-     *
-     * @param page  当前页
-     * @param count 当前页数目
-     * @param name  用户名
-     * @param start 日志开启时间
-     * @param end   日志结束时间
-     * @return 日志数据
-     */
-    IPage<LogDO> getLogPage(Integer page, Integer count, String name, Date start, Date end);
-
-    /**
      * 分页搜索日志
      *
      * @param page    当前页

@@ -28,18 +28,6 @@ public class LogController {
     @Autowired
     private LogService logService;
 
-    @GetMapping("/getLogs")
-    @GroupRequired
-    @PermissionMeta(value = "查询所有日志")
-    public PageResponseVO<LogDO> getLogs(QueryLogDTO dto) {
-        IPage<LogDO> iPage = logService.getLogPage(
-                dto.getPage(), dto.getCount(),
-                dto.getName(), dto.getStart(),
-                dto.getEnd()
-        );
-        return PageUtil.build(iPage);
-    }
-
     @GetMapping("/search")
     @GroupRequired
     @PermissionMeta(value = "搜索日志")
