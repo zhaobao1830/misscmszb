@@ -17,6 +17,16 @@ public class CmsProperties {
 
     private Long tokenRefreshExpire = 2592000L;
 
+    private boolean loggerEnabled = true;
+
+    public boolean isLoggerEnabled() {
+        return loggerEnabled;
+    }
+
+    public void setLoggerEnabled(boolean loggerEnabled) {
+        this.loggerEnabled = loggerEnabled;
+    }
+
     public String getTokenSecret() {
         return tokenSecret;
     }
