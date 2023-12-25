@@ -6,7 +6,7 @@ import com.zb.misscmszb.vo.PageResponseVO;
 import java.util.List;
 
 /**
- * 分页工具类(不懂)
+ * 分页工具类
  */
 public class PageUtil {
 
