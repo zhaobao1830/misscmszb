@@ -19,7 +19,11 @@ public class LogServiceImpl extends ServiceImpl<LogMapper, LogDO> implements Log
     @Override
     public IPage<LogDO> searchLogPage(Integer page, Integer count, String name, String keyword, Date start, Date end) {
         LinPage<LogDO> pager = new LinPage<>(page, count);
-        return this.baseMapper.searchLogsByUsernameAndKeywordAndRange(pager, name, "%" + keyword + "%", start, end);
+        if (keyword != null) {
+            return this.baseMapper.searchLogsByUsernameAndKeywordAndRange(pager, name, "%" + keyword + "%", start, end);
+        } else {
+            return this.baseMapper.findLogsByUsernameAndRange(pager, name, start, end);
+        }
     }
 
     @Override
