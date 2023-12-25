@@ -1,6 +1,8 @@
 package com.zb.misscmszb.controller.v1;
 
 import com.zb.misscmszb.core.annotation.GroupRequired;
+import com.zb.misscmszb.core.annotation.Logger;
+import com.zb.misscmszb.core.annotation.LoginRequired;
 import com.zb.misscmszb.core.annotation.PermissionMeta;
 import com.zb.misscmszb.core.exception.NotFoundException;
 import com.zb.misscmszb.dto.book.CreateOrUpdateBookDTO;
@@ -64,6 +66,7 @@ public class BookController {
 
 
     @GetMapping("/delete/{id}")
+    @Logger(template = "删除图书")
     @GroupRequired
     @PermissionMeta(value = "删除图书", module = "图书")
     public DeletedVO deleteBook(@PathVariable("id") @Positive(message = "{id.positive}") Integer id) {
