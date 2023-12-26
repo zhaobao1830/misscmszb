@@ -21,7 +21,7 @@ request-log:
 #日志配置
 logging:
   level:
-    # web信息日志记录
+    # web信息日志等级
     web: debug
     # SQL日志记录
     com.zb.misscmszb.mapper: debug
