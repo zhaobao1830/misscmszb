@@ -2,10 +2,7 @@ package com.zb.misscmszb.dto.admin;
 
 import lombok.Data;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.*;
 import java.util.List;
 
 /**
@@ -14,7 +11,7 @@ import java.util.List;
 @Data
 public class UpdateUserInfoDTO {
 
-    @NotBlank(message = "{user.id.not-blank}")
+    @NotNull(message = "{user.id.not-blank}")
     @Positive(message = "{user.id.positive}")
     private Integer id;
 
