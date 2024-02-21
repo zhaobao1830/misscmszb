@@ -136,8 +136,9 @@
             <onMismatch>DENY</onMismatch>
         </filter>
     </appender>
-    
-    <logger name="io.github.talelin.latticy.module.log.MDCAccessServletFilter" level="INFO" additivity="false">
+
+<!--    不知道这个有什么用-->
+    <logger name="org.apache.ibatis.cache.decorators.LoggingCache" level="INFO" additivity="false">
         <appender-ref ref="FILE_ACCESS"/>
     </logger>
     
